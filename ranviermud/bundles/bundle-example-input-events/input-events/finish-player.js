@@ -1,12 +1,7 @@
 'use strict';
 
-const { Config, Player } = require('ranvier');
-const PlayerClass = require('../../bundle-example-classes/lib/PlayerClass');
+const { Config, Logger, Player } = require('ranvier');
 
-/**
- * Finish player creation. Add the character to the account then add the player
- * to the game world
- */
 module.exports = {
   event: state => {
     const startingRoomRef = Config.get('startingRoom');
@@ -20,32 +15,41 @@ module.exports = {
         account: args.account,
       });
 
-
-      // TIP:DefaultAttributes: This is where you can change the default attributes for players
-      const defaultAttributes = {
-        health: 100,
-        strength: 20,
-        agility: 20,
-        intellect: 20,
-        stamina: 20,
-        armor: 0,
-        critical: 0
+      // Apply base attributes
+      const baseAttributes = {
+        health: 10, mana: 10,
+        strength: 5, dexterity: 5, constitution: 5,
+        intelligence: 5, wisdom: 5, charisma: 5,
       };
 
-      for (const attr in defaultAttributes) {
-        player.addAttribute(state.AttributeFactory.create(attr, defaultAttributes[attr]));
+      for (const [attr, value] of Object.entries(baseAttributes)) {
+        player.addAttribute(state.AttributeFactory.create(attr, value));
       }
+
+      // Apply racial stat bonuses from creation choices
+      const bonusStats = args.chosenBonusStats || {};
+      for (const [stat, bonus] of Object.entries(bonusStats)) {
+        if (bonus && player.hasAttribute(stat)) {
+          const current = player.getAttribute(stat);
+          player.setAttributeBase(stat, current + bonus);
+        }
+      }
+
+      // Store race metadata
+      player.setMeta('race', args.race);
+      if (args.subrace) {
+        player.setMeta('subrace', args.subrace);
+      }
+
+      const room = state.RoomManager.getRoom(startingRoomRef);
+      player.room = room;
 
       args.account.addCharacter(args.name);
       args.account.save();
 
-      player.setMeta('class', args.playerClass);
-
-      const room = state.RoomManager.getRoom(startingRoomRef);
-      player.room = room;
       await state.PlayerManager.save(player);
 
-      // reload from manager so events are set
+      // Reload from manager so all event listeners are properly attached
       player = await state.PlayerManager.loadPlayer(state, player.account, player.name);
       player.socket = socket;
 

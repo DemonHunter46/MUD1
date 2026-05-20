@@ -21,8 +21,11 @@ module.exports = {
 
       if (confirmation === 'n') {
         say(`Let's try again...`);
+        args.race = null;
+        args.subrace = null;
+        args.chosenBonusStats = null;
         return socket.emit('create-player', socket, args);
-      }
+}
 
       socket.emit('choose-class', socket, args);
     });

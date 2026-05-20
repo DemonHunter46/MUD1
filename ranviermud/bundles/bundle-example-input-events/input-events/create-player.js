@@ -170,27 +170,13 @@ function initCreationTracking(args) {
     strength: 0, dexterity: 0, constitution: 0, intelligence: 0, wisdom: 0, charisma: 0
   };
 }
-
-function shieldPlayerInstance(state, args) {
-  if (!args.player) {
-    const playerName = args.name || (args.account ? args.account.name : 'Adventurer');
-    args.player = new Player({
-      name: playerName,
-      metadata: {}
-    });
-  }
   
-  // Safely seed baseline properties so that downstream assignments remain valid
-  args.player.metadata = args.player.metadata || {};
-  args.player.attributes = args.player.attributes || {};
-  return args.player;
-}
-
 // ============================================================================
 // 2. CREATION LOGIC NODES (The State Machine)
 // ============================================================================
 
 function chooseRaceElement(state, socket, args) {
+  initCreationTracking(args); // <-- ADD THIS LINE
   const say = message => socket.write(message + "\r\n");
 
   say("\r\n--------------------------------------------");
@@ -231,7 +217,6 @@ function confirmRaceElement(state, socket, args, chosenRace) {
     const answer = data.toString().replace(/[\r\n]/g, '').trim().toLowerCase();
 
     if (answer === 'yes' || answer === 'y') {
-      initCreationTracking(args);
       args.race = chosenRace;
       shieldPlayerInstance(state, args);
 
@@ -330,7 +315,6 @@ function confirmSubraceElement(state, socket, args, parentRaceKey, chosenSubrace
     const answer = data.toString().replace(/[\r\n]/g, '').trim().toLowerCase();
 
     if (answer === 'yes' || answer === 'y') {
-      initCreationTracking(args);
       args.subrace = chosenSubraceKey;
       shieldPlayerInstance(state, args);
 
@@ -397,8 +381,6 @@ function allocatePlusTwo(state, socket, args) {
       say(`\r\n[ '${stat}' is not a valid attribute name. ]`);
       return allocatePlusTwo(state, socket, args);
     }
-
-    initCreationTracking(args);
     args.chosenBonusStats[stat] += 2;
 
     say(`\r\nSuccessfully applied +2 to ${formatStatName(stat)}!`);
@@ -430,7 +412,6 @@ function allocatePlusOne(state, socket, args, allocatedStats = []) {
     }
 
     allocatedStats.push(stat);
-    initCreationTracking(args);
     args.chosenBonusStats[stat] += 1;
     say(` Added +1 to ${formatStatName(stat)}.`);
 
@@ -448,35 +429,8 @@ function allocatePlusOne(state, socket, args, allocatedStats = []) {
 // ============================================================================
 
 function nextCreationStep(state, socket, args) {
-  const player = shieldPlayerInstance(state, args);
-  
-  // Set the high-level metadata variables cleanly onto the player instance
-  player.setMeta('race', args.race);
-  if (args.subrace) {
-    player.setMeta('subrace', args.subrace);
-  }
-
-  player.metadata.race = args.race;
-  if (args.subrace) {
-    player.metadata.subrace = args.subrace;
-  }
-
-  // Track and save your 6 core stat choices inside their permanent metadata tree
-  initCreationTracking(args);
-  const finalStats = {};
-  for (const stat of VALID_STATS) {
-    const bonusValue = args.chosenBonusStats[stat] || 0;
-    const baseScore = 10; // Standard baseline statistic score
-    finalStats[stat] = baseScore + bonusValue;
-  }
-  
-  // Save the full stats dictionary inside player metadata
-  player.setMeta('stats', finalStats);
-
-  socket.write("\r\nCharacter creation successful! Entering the realm...\r\n");
-  
-  // Directly point handoff over to the classless 'done' scene
-  socket.emit('done', socket, args);
+  socket.write("\r\nCharacter creation complete! Entering the realm...\r\n");
+  socket.emit('finish-player', socket, args);
 }
 
 module.exports = {
