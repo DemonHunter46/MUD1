@@ -27,7 +27,7 @@ module.exports = {
         return socket.emit('create-player', socket, args);
 }
 
-      socket.emit('choose-class', socket, args);
+      socket.emit('create-player', socket, args);
     });
   }
 };

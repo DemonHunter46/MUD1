@@ -6,5 +6,7 @@ module.exports = [
   { name: 'constitution', base: 5 },
   { name: 'intelligence', base: 5 },
   { name: 'wisdom', base: 5 },
-  { name: 'charisma', base: 5 }
+  { name: 'charisma', base: 5 },
+  { name: 'health', base: 10},
+  { name: 'mana', base:10}
 ];

@@ -175,6 +175,50 @@ function initCreationTracking(args) {
 // 2. CREATION LOGIC NODES (The State Machine)
 // ============================================================================
 
+function askPlayerName(state, socket, args) {
+  const say = message => socket.write(message + "\r\n");
+
+  socket.write("Enter a name for your character: ");
+
+  socket.once('data', data => {
+    const name = data.toString().replace(/[\r\n]/g, '').trim();
+
+    if (!name.length) {
+      say("\r\n[Name cannot be empty.]");
+      return askPlayerName(state, socket, args);
+    }
+
+    if (!/^[a-zA-Z]+$/.test(name)) {
+      say("\r\n[Name may only contain letters.]");
+      return askPlayerName(state, socket, args);
+    }
+
+    const properName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+
+    if (state.PlayerManager.getPlayer(properName)) {
+      say("\r\n[That name is already taken.]");
+      return askPlayerName(state, socket, args);
+    }
+
+    socket.write(`\r\nCreate a character named ${properName}? (yes/no): `);
+
+    socket.once('data', confirmation => {
+      const answer = confirmation.toString().replace(/[\r\n]/g, '').trim().toLowerCase();
+
+      if (answer === 'yes' || answer === 'y') {
+        args.name = properName;
+        return chooseRaceElement(state, socket, args);
+      } else if (answer === 'no' || answer === 'n') {
+        return askPlayerName(state, socket, args);
+      } else {
+        say("\r\n[Please type yes or no.]");
+        return askPlayerName(state, socket, args);
+      }
+    });
+  });
+}
+
+
 function chooseRaceElement(state, socket, args) {
   initCreationTracking(args); // <-- ADD THIS LINE
   const say = message => socket.write(message + "\r\n");
@@ -218,7 +262,7 @@ function confirmRaceElement(state, socket, args, chosenRace) {
 
     if (answer === 'yes' || answer === 'y') {
       args.race = chosenRace;
-      shieldPlayerInstance(state, args);
+      
 
       const hasSubraces = raceData.subraces && Object.keys(raceData.subraces).length > 0;
 
@@ -316,7 +360,7 @@ function confirmSubraceElement(state, socket, args, parentRaceKey, chosenSubrace
 
     if (answer === 'yes' || answer === 'y') {
       args.subrace = chosenSubraceKey;
-      shieldPlayerInstance(state, args);
+      
 
       for (const [stat, value] of Object.entries(combinedStats)) {
         args.chosenBonusStats[stat] += value;
@@ -435,6 +479,9 @@ function nextCreationStep(state, socket, args) {
 
 module.exports = {
   event: (state) => (socket, args) => {
-    chooseRaceElement(state, socket, args);
+    if (args.name) {
+      return chooseRaceElement(state, socket, args);
+    }
+    askPlayerName(state, socket, args);
   }
 };

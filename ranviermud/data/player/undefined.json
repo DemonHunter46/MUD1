@@ -1,0 +1,54 @@
+{
+  "attributes": {
+    "health": {
+      "delta": 0,
+      "base": 10
+    },
+    "mana": {
+      "delta": 0,
+      "base": 10
+    },
+    "strength": {
+      "delta": 0,
+      "base": 5
+    },
+    "dexterity": {
+      "delta": 0,
+      "base": 7
+    },
+    "constitution": {
+      "delta": 0,
+      "base": 6
+    },
+    "intelligence": {
+      "delta": 0,
+      "base": 5
+    },
+    "wisdom": {
+      "delta": 0,
+      "base": 5
+    },
+    "charisma": {
+      "delta": 0,
+      "base": 5
+    }
+  },
+  "level": 1,
+  "room": "limbo:white",
+  "effects": [],
+  "experience": 0,
+  "inventory": {
+    "items": [],
+    "max": 16
+  },
+  "metadata": {
+    "race": "gruung"
+  },
+  "prompt": "> ",
+  "quests": {
+    "completed": [],
+    "active": []
+  },
+  "role": 0,
+  "equipment": {}
+}
