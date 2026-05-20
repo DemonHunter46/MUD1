@@ -17,6 +17,11 @@ module.exports = {
     const maxHp  = player.getMaxAttribute('health')    || 0;
     const mana   = player.getAttribute('mana')         || 0;
     const maxMana = player.getMaxAttribute('mana')     || 0;
+    const invSize = player.inventory ? player.inventory.size : 0;
+    const invMax  = player.inventory ? player.inventory.getMax() : 10 + (player.getAttribute('strength') || 10);
+
+
+
 
     say('');
     say('<b><green>============================================</green></b>');
@@ -24,6 +29,7 @@ module.exports = {
     say('<b><green>============================================</green></b>');
     say(` <b>Health</b> : ${health}/${maxHp}`);
     say(` <b>Mana</b>   : ${mana}/${maxMana}`);
+    say(` <b>Carry</b>  : ${invSize}/${invMax} items`);
     say('<b><green>--------------------------------------------</green></b>');
     say(` <b>Strength</b>     : ${player.getAttribute('strength')     || 0}`);
     say(` <b>Dexterity</b>    : ${player.getAttribute('dexterity')    || 0}`);

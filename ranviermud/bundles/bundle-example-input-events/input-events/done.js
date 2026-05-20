@@ -68,6 +68,15 @@ module.exports = {
       // Catch silently if 'race-traits' effect bundle is not built yet
     }
 
+    
+    
+    // Set inventory capacity using formula: 10 + strength
+    const strength = player.getAttribute('strength') || 10;
+    player.inventory = player.inventory || new (require('ranvier').Inventory)();
+    player.inventory.setMax(10 + strength);
+    
+    
+    
     // 7. Finalize data, display the starting description, and enable command input streams
     player.save();
 

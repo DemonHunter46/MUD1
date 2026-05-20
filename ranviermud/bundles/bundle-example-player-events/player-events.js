@@ -2,13 +2,25 @@
 
 const sprintf = require('sprintf-js').sprintf;
 const LevelUtil = require('../bundle-example-lib/lib/LevelUtil');
-const { Broadcast: B, Config, Logger } = require('ranvier');
+const { Broadcast: B, Config, Inventory, Logger } = require('ranvier');
 
 module.exports = {
   listeners: {
     /**
-     * Handle a player movement command. From: 'commands' input event.
-     * movementCommand is a result of CommandParser.parse
+     * Set inventory capacity on login using formula: 10 + strength
+     */
+    login: state => function () {
+      const strength = this.getAttribute('strength') || 10;
+
+      if (!this.inventory) {
+        this.inventory = new Inventory();
+      }
+
+      this.inventory.setMax(10 + strength);
+    },
+
+    /**
+     * Handle player movement
      */
     move: state => function (movementCommand) {
       const { roomExit } = movementCommand;
@@ -76,6 +88,7 @@ module.exports = {
         this.commandQueue.execute();
         B.prompt(this);
       }
+
       const lastCommandTime = this._lastCommandTime || Infinity;
       const timeSinceLastCommand = Date.now() - lastCommandTime;
       const maxIdleTime = (Math.abs(Config.get('maxIdleTime')) * 60000) || Infinity;
@@ -92,14 +105,12 @@ module.exports = {
 
     /**
      * Handle player gaining experience
-     * @param {number} amount Exp gained
      */
     experience: state => function (amount) {
       B.sayAt(this, `<blue>You gained <bold>${amount}</bold> experience!</blue>`);
 
       const totalTnl = LevelUtil.expToLevel(this.level + 1);
 
-      // level up, currently wraps experience if they gain more than needed for multiple levels
       if (this.experience + amount > totalTnl) {
         B.sayAt(this, '                                   <bold><blue>!Level Up!</blue></bold>');
         B.sayAt(this, B.progress(80, 100, "blue"));
@@ -116,7 +127,6 @@ module.exports = {
       }
 
       this.experience += amount;
-
       this.save();
     },
   }
