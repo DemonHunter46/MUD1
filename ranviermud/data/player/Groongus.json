@@ -1,34 +1,34 @@
 {
   "attributes": {
-    "health": {
-      "delta": 0,
-      "base": 20
-    },
-    "mana": {
-      "delta": 0,
-      "base": 20
-    },
     "strength": {
       "delta": 0,
-      "base": 10
+      "base": 7
     },
     "dexterity": {
       "delta": 0,
-      "base": 10
+      "base": 5
     },
     "constitution": {
       "delta": 0,
-      "base": 10
+      "base": 5
     },
     "intelligence": {
       "delta": 0,
-      "base": 10
+      "base": 5
     },
     "wisdom": {
       "delta": 0,
-      "base": 10
+      "base": 6
     },
     "charisma": {
+      "delta": 0,
+      "base": 5
+    },
+    "health": {
+      "delta": 0,
+      "base": 10
+    },
+    "mana": {
       "delta": 0,
       "base": 10
     }
@@ -43,7 +43,15 @@
     "max": 16
   },
   "metadata": {
-    "race": "gruung"
+    "stats": {
+      "strength": 7,
+      "dexterity": 5,
+      "constitution": 5,
+      "intelligence": 5,
+      "wisdom": 6,
+      "charisma": 5
+    },
+    "race": "tortle"
   },
   "prompt": "> ",
   "quests": {

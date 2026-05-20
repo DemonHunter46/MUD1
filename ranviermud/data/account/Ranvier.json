@@ -6,6 +6,10 @@
     },
     {
       "username": "Groongus",
+      "deleted": true
+    },
+    {
+      "username": "Groongus",
       "deleted": false
     }
   ],

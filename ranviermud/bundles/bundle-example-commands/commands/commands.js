@@ -51,19 +51,17 @@ function sayAtColumns (source, strings, numCols) {
     Broadcast.sayAt(source);
   }
 }
-
 module.exports = {
-  aliases: [ 'stats', 'attributes' ],
   command: state => (args, player) => {
-    player.say(`=======================================`);
-    player.say(`  Character: ${player.name}            `);
-    player.say(`=======================================`);
-    player.say(`  Strength:     ${player.getAttribute('strength')}`);
-    player.say(`  Dexterity:    ${player.getAttribute('dexterity')}`);
-    player.say(`  Constitution: ${player.getAttribute('constitution')}`);
-    player.say(`  Intelligence: ${player.getAttribute('intelligence')}`);
-    player.say(`  Wisdom:       ${player.getAttribute('wisdom')}`);
-    player.say(`  Charisma:     ${player.getAttribute('charisma')}`);
-    player.say(`=======================================`);
+    const commands = [...state.CommandManager.commands.values()];
+    const commandNames = commands.map(cmd => cmd.name).sort();
+
+    B.sayAt(player, '');
+    B.sayAt(player, '<b>Available Commands:</b>');
+    B.sayAt(player, B.line(40));
+    for (const name of commandNames) {
+      B.sayAt(player, `  ${name}`);
+    }
+    B.sayAt(player, '');
   }
 };
