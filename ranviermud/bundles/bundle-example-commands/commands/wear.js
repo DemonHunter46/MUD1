@@ -27,8 +27,12 @@ module.exports = {
       return say(player, `You can't wear ${ItemUtil.display(item)}.`);
     }
 
-    if (item.level > player.level) {
-      return say(player, "You can't use that yet.");
+    const requires = item.metadata.requires || {};
+    for (const [stat, minimum] of Object.entries(requires)) {
+      if ((player.getAttribute(stat) || 0) < minimum) {
+        const statName = stat.charAt(0).toUpperCase() + stat.slice(1);
+        return say(player, `You need at least ${minimum} ${statName} to equip that.`);
+      }
     }
 
     try {

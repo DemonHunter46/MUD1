@@ -425,6 +425,12 @@ function allocatePlusTwo(state, socket, args) {
       say(`\r\n[ '${stat}' is not a valid attribute name. ]`);
       return allocatePlusTwo(state, socket, args);
     }
+    const currentValue = 5 + (args.chosenBonusStats[stat] || 0);
+    if (currentValue + 2 > 99) {
+      say(`\r\n[ ${formatStatName(stat)} would exceed the maximum of 30. ]`);
+      return allocatePlusTwo(state, socket, args);
+    }
+    
     args.chosenBonusStats[stat] += 2;
 
     say(`\r\nSuccessfully applied +2 to ${formatStatName(stat)}!`);
@@ -454,7 +460,12 @@ function allocatePlusOne(state, socket, args, allocatedStats = []) {
       say("\r\n[ Conflict: You must choose a completely separate second attribute! ]");
       return allocatePlusOne(state, socket, args, allocatedStats);
     }
-
+    const currentValue = 10 + (args.chosenBonusStats[stat] || 0);
+    if (currentValue + 2 > 30) {
+      say(`\r\n[ ${formatStatName(stat)} would exceed the maximum of 30. ]`);
+      return allocatePlusTwo(state, socket, args);
+    }
+    
     allocatedStats.push(stat);
     args.chosenBonusStats[stat] += 1;
     say(` Added +1 to ${formatStatName(stat)}.`);

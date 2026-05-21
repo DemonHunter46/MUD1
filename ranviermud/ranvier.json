@@ -20,12 +20,12 @@
     "websocket-networking"
   ],
   "attributes": {
-    "strength": { "base": 5 },
-    "dexterity": { "base": 5 },
-    "constitution": { "base": 5 },
-    "intelligence": { "base": 5 },
-    "wisdom": { "base": 5 },
-    "charisma": { "base": 5 },
+    "strength": { "base": 5, "min": 1, "max": 99 },
+    "dexterity": { "base": 5, "min": 1, "max": 99 },
+    "constitution": { "base": 5, "min": 1, "max": 99 },
+    "intelligence": { "base": 5, "min": 1, "max": 99 },
+    "wisdom": { "base": 5, "min": 1, "max": 99 },
+    "charisma": { "base": 5, "min": 1, "max": 99 },
     "health": { "base": 10 },
     "mana": { "base": 10 }
   },
