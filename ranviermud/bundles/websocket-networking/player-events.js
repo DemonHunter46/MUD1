@@ -20,10 +20,38 @@ module.exports = {
       updateCharacter.call(this);
       updateStats.call(this);
       updateMap.call(this);
+      updateInventory.call(this);
+
+      this.socket.command('sendData', 'factions', [
+        { name: 'Town Guard',      value: 0 },
+        { name: 'Merchants Guild', value: 0 },
+      ]);
     },
 
     move: state => function () {
       updateMap.call(this);
+    },
+
+    equip: state => function () {
+      setTimeout(() => {
+        updateInventory.call(this);
+        updateStats.call(this);
+      }, 500);
+    },
+
+    unequip: state => function () {
+      setTimeout(() => {
+        updateInventory.call(this);
+        updateStats.call(this);
+      }, 500);
+    },
+
+    get: state => function () {
+      setTimeout(() => updateInventory.call(this), 500);
+    },
+
+    drop: state => function () {
+      setTimeout(() => updateInventory.call(this), 500);
     },
 
     combatantAdded: state => function () {
@@ -104,6 +132,13 @@ function updateCharacter() {
 }
 
 function updateStats() {
+  let totalAC = 0;
+  for (const [slot, item] of this.equipment) {
+    if (item.metadata && item.metadata.ac) {
+      totalAC += item.metadata.ac;
+    }
+  }
+
   this.socket.command('sendData', 'stats', {
     strength:     this.getAttribute('strength')     || 0,
     dexterity:    this.getAttribute('dexterity')    || 0,
@@ -111,14 +146,15 @@ function updateStats() {
     intelligence: this.getAttribute('intelligence') || 0,
     wisdom:       this.getAttribute('wisdom')       || 0,
     charisma:     this.getAttribute('charisma')     || 0,
+    ac:           totalAC,
   });
 }
 
 function updateMap() {
   if (!this.room || !this.room.area) return;
 
-  const area  = this.room.area;
-  const floor = this.room.coordinates ? this.room.coordinates.z : 0;
+  const area      = this.room.area;
+  const floor     = this.room.coordinates ? this.room.coordinates.z : 0;
   const areaFloor = area.map.get(floor);
 
   if (!areaFloor) return;
@@ -142,6 +178,41 @@ function updateMap() {
     currentRoom: this.room.entityReference,
     floor:       floor,
     rooms:       rooms,
+  });
+}
+
+function updateInventory() {
+  const items = [];
+
+  const inventoryMax = this.getMeta('inventoryMax') ||
+    (this.inventory ? this.inventory.getMax() : 0);
+
+  for (const [slot, item] of this.equipment) {
+    items.push({
+      name:     item.name,
+      type:     item.type || 'item',
+      quantity: 1,
+      equipped: true,
+    });
+  }
+
+  let unequippedCount = 0;
+  if (this.inventory) {
+    for (const [uuid, item] of this.inventory) {
+      unequippedCount++;
+      items.push({
+        name:     item.name,
+        type:     item.type || 'item',
+        quantity: 1,
+        equipped: false,
+      });
+    }
+  }
+
+  this.socket.command('sendData', 'inventory', {
+    size:  unequippedCount,
+    max:   inventoryMax,
+    items: items,
   });
 }
 

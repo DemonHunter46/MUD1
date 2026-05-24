@@ -3,6 +3,14 @@
   "characters": [
     {
       "username": "Bob",
+      "deleted": true
+    },
+    {
+      "username": "Groongus",
+      "deleted": true
+    },
+    {
+      "username": "Groongus",
       "deleted": false
     }
   ],

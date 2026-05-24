@@ -99,9 +99,21 @@ class Combat {
       }
     }
 
-    // Apply AC damage reduction from target's metadata
-    // AC value directly equals damage reduction percentage, capped at 60%
-    const ac = (target.metadata && target.metadata.ac) || 0;
+    // Calculate AC based on whether target is NPC or player
+    let ac = 0;
+    if (target.isNpc) {
+      // NPCs have a flat AC value in metadata
+      ac = (target.metadata && target.metadata.ac) || 0;
+    } else {
+      // Players calculate AC by summing all equipped armor pieces
+      for (const [slot, item] of target.equipment) {
+        if (item.metadata && item.metadata.ac) {
+          ac += item.metadata.ac;
+        }
+      }
+    }
+
+    // AC value equals damage reduction percentage, capped at 60%
     const reductionPercent = Math.min(60, ac);
     if (reductionPercent > 0) {
       amount = Math.round(amount * (1 - reductionPercent / 100));
