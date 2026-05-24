@@ -27,7 +27,10 @@
     "wisdom": { "base": 5, "min": 1, "max": 99 },
     "charisma": { "base": 5, "min": 1, "max": 99 },
     "health": { "base": 10 },
-    "mana": { "base": 10 }
+    "mana": { "base": 10 },
+    "hunger": { "base": 100},
+    "thirst": { "base": 100}
+  
   },
   "dataSources": {
     "YamlArea": {

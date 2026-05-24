@@ -4,12 +4,6 @@ const { Config, Logger, Player } = require('ranvier');
 
 const CORE_STATS = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
 
-const STAT_MIN = 1;
-const STAT_MAX = 30;
-
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-
-
 module.exports = {
   event: state => {
     const startingRoomRef = Config.get('startingRoom');
@@ -28,8 +22,7 @@ module.exports = {
       // Build final core stats with racial bonuses applied
       const finalStats = {};
       for (const stat of CORE_STATS) {
-        const bonus = bonusStats[stat] || 0;
-        finalStats[stat] = clamp(10 + bonus, STAT_MIN, STAT_MAX);
+        finalStats[stat] = 10 + (bonusStats[stat] || 0);
       }
 
       // Save core stats into metadata so done.js can read them on every login
@@ -41,12 +34,15 @@ module.exports = {
         player.setMeta('subrace', args.subrace);
       }
 
-      // Register all attributes on the player (health/mana done.js will derive)
+      // Register all attributes on the player
       const allAttributes = {
         ...finalStats,
-        health: 10,
-        mana: 10,
+        health: 100,
+        mana:   100,
+        hunger: 100,
+        thirst: 100,
       };
+
       for (const [attr, value] of Object.entries(allAttributes)) {
         player.addAttribute(state.AttributeFactory.create(attr, value));
       }

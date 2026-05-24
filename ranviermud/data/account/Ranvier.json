@@ -11,10 +11,14 @@
     {
       "username": "Groongus",
       "deleted": false
+    },
+    {
+      "username": "Bob",
+      "deleted": true
     }
   ],
   "password": "$2a$10$dSz29OtOqVY.eVzkZBy3Ue5ooWQRMiLDKz.7fHpJS5Wi/hgstbz0i",
   "banned": false,
-  "deleted": false,
+  "deleted": true,
   "metadata": {}
 }

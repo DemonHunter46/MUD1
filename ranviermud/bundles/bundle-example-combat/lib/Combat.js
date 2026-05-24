@@ -14,11 +14,10 @@ class Combat {
    * Handle a single combat round for a given attacker
    * @param {GameState} state
    * @param {Character} attacker
-   * @return {boolean}  true if combat actions were performed this round
+   * @return {boolean} true if combat actions were performed this round
    */
   static updateRound(state, attacker) {
     if (attacker.combatData.killed) {
-      // entity was removed from the game but update event was still in flight, ignore it
       return false;
     }
 
@@ -32,15 +31,12 @@ class Combat {
     let lastRoundStarted = attacker.combatData.roundStarted;
     attacker.combatData.roundStarted = Date.now();
 
-    // cancel if the attacker's combat lag hasn't expired yet
     if (attacker.combatData.lag > 0) {
       const elapsed = Date.now() - lastRoundStarted;
       attacker.combatData.lag -= elapsed;
       return false;
     }
 
-    // currently just grabs the first combatant from their list but could easily be modified to
-    // implement a threat table and grab the attacker with the highest threat
     let target = null;
     try {
       target = Combat.chooseCombatant(attacker);
@@ -50,16 +46,13 @@ class Combat {
       throw e;
     }
 
-    // no targets left, remove attacker from combat
     if (!target) {
       attacker.removeFromCombat();
-      // reset combat data to remove any lag
       attacker.combatData = {};
       return false;
     }
 
     if (target.combatData.killed) {
-      // entity was removed from the game but update event was still in flight, ignore it
       return false;
     }
 
@@ -106,18 +99,25 @@ class Combat {
       }
     }
 
+    // Apply AC damage reduction from target's metadata
+    // AC value directly equals damage reduction percentage, capped at 60%
+    const ac = (target.metadata && target.metadata.ac) || 0;
+    const reductionPercent = Math.min(60, ac);
+    if (reductionPercent > 0) {
+      amount = Math.round(amount * (1 - reductionPercent / 100));
+    }
+
     const weapon = attacker.equipment.get('wield');
-    const damage = new Damage('health', amount, attacker, weapon || attacker, { critical });
+    const damage = new Damage('health', amount, attacker, weapon || attacker, { critical, type: 'physical' });
     damage.commit(target);
 
-    // currently lag is really simple, the character's weapon speed = lag
     attacker.combatData.lag = this.getWeaponSpeed(attacker) * 1000;
   }
 
   /**
    * Any cleanup that has to be done if the character is killed
    * @param {Character} deadEntity
-   * @param {?Character} killer Optionally the character that killed the dead entity
+   * @param {?Character} killer
    */
   static handleDeath(state, deadEntity, killer) {
     if (deadEntity.combatData.killed) {
@@ -154,7 +154,7 @@ class Combat {
   /**
    * @param {string} args
    * @param {Player} player
-   * @return {Entity|null} Found entity... or not.
+   * @return {Entity|null}
    */
   static findCombatant(attacker, search) {
     if (!search.length) {
@@ -194,7 +194,7 @@ class Combat {
   /**
    * Generate an amount of weapon damage
    * @param {Character} attacker
-   * @param {boolean} average Whether to find the average or a random between min/max
+   * @param {boolean} average
    * @return {number}
    */
   static calculateWeaponDamage(attacker, average = false) {
@@ -216,15 +216,18 @@ class Combat {
    */
   static getWeaponDamage(attacker) {
     const weapon = attacker.equipment.get('wield');
-    let min = 0, max = 0;
     if (weapon) {
-      min = weapon.metadata.minDamage;
-      max = weapon.metadata.maxDamage;
+      return {
+        min: weapon.metadata.minDamage,
+        max: weapon.metadata.maxDamage,
+      };
     }
 
+    // Unarmed damage scaled to strength
+    const strength = attacker.hasAttribute('strength') ? attacker.getAttribute('strength') : 1;
     return {
-      max,
-      min
+      min: Math.max(1, Math.floor(strength / 5)),
+      max: Math.max(2, Math.floor(strength / 3)),
     };
   }
 

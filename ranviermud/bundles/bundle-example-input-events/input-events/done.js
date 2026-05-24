@@ -2,62 +2,55 @@
 
 const { Broadcast, Logger } = require('ranvier');
 
-/**
- * Login is done, allow the player to actually execute commands
- */
 module.exports = {
   event: state => (socket, args) => {
     let player = args.player;
-    
-    // 1. Hydrate loads the baseline player shell mechanics from the save data blueprints
+
+    // 1. Hydrate loads the baseline player shell mechanics from the save data
     player.hydrate(state);
 
-    // 2. Retrieve your saved stats dictionary from the metadata tree configuration
+    // 2. Retrieve saved stats from metadata
     const savedStats = player.getMeta('stats') || {
-      strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10
+      strength: 10, dexterity: 10, constitution: 10,
+      intelligence: 10, wisdom: 10, charisma: 10
     };
 
-    // 3. HARDENING STEP: Explicitly verify and force initialize Ranvier's internal attributes map
+    // 3. Ensure attributes map exists
     if (!player.attributes) {
       player.attributes = new Map();
     }
 
-    // List of your 6 core stats to register on the player's live memory collection
-    const coreStats = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma', 'health', 'mana'];
+    const coreStats = [
+      'strength', 'dexterity', 'constitution',
+      'intelligence', 'wisdom', 'charisma',
+      'health', 'mana', 'hunger', 'thirst'
+    ];
 
-    // Dynamically inject the attribute definition slots into the Map if Ranvier didn't load them
     for (const stat of coreStats) {
       if (!player.attributes.has(stat)) {
-        // We pull the Attribute factory class from state to initialize a proper operational Map entry
         try {
           const attributeDefinition = state.AttributeFactory.create(stat, 10);
           player.attributes.set(stat, attributeDefinition);
         } catch (e) {
-          // Fallback if the Factory is unseeded: structure a plain object shape Ranvier accepts
-          player.attributes.set(stat, {
-            name: stat,
-            base: 10,
-            delta: 0
-          });
+          // Attribute not registered in ranvier.json — skip it
+          Logger.error(`done.js: failed to create attribute '${stat}': ${e.message}`);
         }
       }
     }
 
-    // 4. Safely apply your custom chosen character scores into the active tracking slots
+    // 4. Apply saved core stats
     for (const [stat, value] of Object.entries(savedStats)) {
       player.setAttributeBase(stat, value);
     }
 
-    // 5. ENFORCE CLASSLESS STAT MULTIPLIER FORMULAS
-    // Mana calculation loop = Intelligence * 2
-    const currentInt = player.getAttribute('intelligence') || 10;
-    player.setAttributeBase('mana', currentInt * 2);
-
-    // Health calculation loop = Constitution * 2
+    // 5. Derive health and mana from constitution and intelligence
     const currentCon = player.getAttribute('constitution') || 10;
     player.setAttributeBase('health', currentCon * 2);
 
-    // 6. RACIAL TRAIT PASSIVE EFFECT REGISTRATION
+    const currentInt = player.getAttribute('intelligence') || 10;
+    player.setAttributeBase('mana', currentInt * 2);
+
+    // 6. Apply racial trait effects
     try {
       const raceMeta = player.getMeta('race');
       if (raceMeta && !player.effects.has('race-traits')) {
@@ -65,19 +58,12 @@ module.exports = {
         player.addEffect(traitEffect);
       }
     } catch (err) {
-      // Catch silently if 'race-traits' effect bundle is not built yet
+      // Silently catch if race-traits effect is not yet built
     }
 
-    
-    
-    // Set inventory capacity using formula: 10 + strength
-    const strength = player.getAttribute('strength') || 10;
-    player.inventory = player.inventory || new (require('ranvier').Inventory)();
-    player.inventory.setMax(10 + strength);
-    
-    
-    
-    // 7. Finalize data, display the starting description, and enable command input streams
+    // 7. Mark player as fully logged in before emitting login
+    player.setMeta('loggedIn', true);
+
     player.save();
 
     player._lastCommandTime = Date.now();

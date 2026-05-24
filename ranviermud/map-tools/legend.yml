@@ -1,0 +1,44 @@
+".":
+  id: field
+  title: "Open Field"
+  descriptions:
+    - "Tall grass sways in the breeze."
+    - "A wide open field stretches before you."
+    - "Rolling grassland extends in all directions."
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+
+"F":
+  id: forest
+  title: "Forest"
+  descriptions:
+    - "Tall trees surround you, their canopy blocking the sun."
+    - "Ancient oaks press close on all sides."
+    - "The forest floor is thick with undergrowth."
+  metadata:
+    mapType: forest
+    terrain: forest
+    moveCost: 2
+
+"T":
+  id: town-entrance
+  title: "Town Entrance"
+  descriptions:
+    - "The walls of a small town rise before you."
+  metadata:
+    mapType: town
+    terrain: town
+    moveCost: 1
+
+"~":
+  id: river
+  title: "Riverbank"
+  descriptions:
+    - "The sound of rushing water fills your ears."
+    - "A wide river cuts through the landscape here."
+  metadata:
+    mapType: water
+    terrain: river
+    moveCost: 3

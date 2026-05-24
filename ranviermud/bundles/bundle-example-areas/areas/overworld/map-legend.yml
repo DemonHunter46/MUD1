@@ -1,0 +1,19 @@
+".":
+  title: "Open Field"
+  description: "A wide open grassy field stretches before you."
+  id: field
+
+"F":
+  title: "Forest"
+  description: "Tall trees surround you, their canopy blocking the sun."
+  id: forest
+
+"T":
+  title: "Town Square"
+  description: "The bustling heart of a small town."
+  id: town-square
+
+"M":
+  title: "Mountain Path"
+  description: "A narrow path winds up the rocky mountainside."
+  id: mountain-path

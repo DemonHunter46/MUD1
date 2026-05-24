@@ -1,0 +1,990 @@
+- id: field-1-5
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 1
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-2-5
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 2
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-3-5
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 3
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-4-5
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 4
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-5-5
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 5
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-6-5
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 6
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-7-5
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 7
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-8-5
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 8
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-9-5
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 9
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-10-5
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 10
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-11-5
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 11
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-12-5
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 12
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-13-5
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 13
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-14-5
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 14
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-15-5
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 15
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-16-5
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 16
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-17-5
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 17
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-18-5
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 18
+    - 5
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-1-4
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 1
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-2-4
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 2
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-3-4
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 3
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: forest-4-4
+  title: Forest
+  description: The forest floor is thick with undergrowth.
+  coordinates:
+    - 4
+    - 4
+    - 0
+  metadata:
+    mapType: forest
+    terrain: forest
+    moveCost: 2
+- id: forest-5-4
+  title: Forest
+  description: 'Tall trees surround you, their canopy blocking the sun.'
+  coordinates:
+    - 5
+    - 4
+    - 0
+  metadata:
+    mapType: forest
+    terrain: forest
+    moveCost: 2
+- id: forest-6-4
+  title: Forest
+  description: 'Tall trees surround you, their canopy blocking the sun.'
+  coordinates:
+    - 6
+    - 4
+    - 0
+  metadata:
+    mapType: forest
+    terrain: forest
+    moveCost: 2
+- id: field-7-4
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 7
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-8-4
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 8
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-9-4
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 9
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-10-4
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 10
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: town-entrance-11-4
+  title: Town Entrance
+  description: The walls of a small town rise before you.
+  coordinates:
+    - 11
+    - 4
+    - 0
+  metadata:
+    mapType: town
+    terrain: town
+    moveCost: 1
+- id: field-12-4
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 12
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-13-4
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 13
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-14-4
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 14
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-15-4
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 15
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-16-4
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 16
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-17-4
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 17
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-18-4
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 18
+    - 4
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-1-3
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 1
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-2-3
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 2
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-3-3
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 3
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: forest-4-3
+  title: Forest
+  description: Ancient oaks press close on all sides.
+  coordinates:
+    - 4
+    - 3
+    - 0
+  metadata:
+    mapType: forest
+    terrain: forest
+    moveCost: 2
+- id: forest-5-3
+  title: Forest
+  description: 'Tall trees surround you, their canopy blocking the sun.'
+  coordinates:
+    - 5
+    - 3
+    - 0
+  metadata:
+    mapType: forest
+    terrain: forest
+    moveCost: 2
+- id: forest-6-3
+  title: Forest
+  description: 'Tall trees surround you, their canopy blocking the sun.'
+  coordinates:
+    - 6
+    - 3
+    - 0
+  metadata:
+    mapType: forest
+    terrain: forest
+    moveCost: 2
+- id: field-7-3
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 7
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-8-3
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 8
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-9-3
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 9
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-10-3
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 10
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-11-3
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 11
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-12-3
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 12
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-13-3
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 13
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-14-3
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 14
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-15-3
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 15
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-16-3
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 16
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-17-3
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 17
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-18-3
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 18
+    - 3
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-1-2
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 1
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-2-2
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 2
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-3-2
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 3
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-4-2
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 4
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-5-2
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 5
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-6-2
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 6
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-7-2
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 7
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-8-2
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 8
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: river-9-2
+  title: Riverbank
+  description: The sound of rushing water fills your ears.
+  coordinates:
+    - 9
+    - 2
+    - 0
+  metadata:
+    mapType: water
+    terrain: river
+    moveCost: 3
+- id: river-10-2
+  title: Riverbank
+  description: A wide river cuts through the landscape here.
+  coordinates:
+    - 10
+    - 2
+    - 0
+  metadata:
+    mapType: water
+    terrain: river
+    moveCost: 3
+- id: river-11-2
+  title: Riverbank
+  description: The sound of rushing water fills your ears.
+  coordinates:
+    - 11
+    - 2
+    - 0
+  metadata:
+    mapType: water
+    terrain: river
+    moveCost: 3
+- id: field-12-2
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 12
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-13-2
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 13
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-14-2
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 14
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-15-2
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 15
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-16-2
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 16
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-17-2
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 17
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-18-2
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 18
+    - 2
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-1-1
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 1
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-2-1
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 2
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-3-1
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 3
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-4-1
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 4
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-5-1
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 5
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-6-1
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 6
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-7-1
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 7
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-8-1
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 8
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-9-1
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 9
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-10-1
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 10
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-11-1
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 11
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-12-1
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 12
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-13-1
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 13
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-14-1
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 14
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-15-1
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 15
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-16-1
+  title: Open Field
+  description: Tall grass sways in the breeze.
+  coordinates:
+    - 16
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-17-1
+  title: Open Field
+  description: Rolling grassland extends in all directions.
+  coordinates:
+    - 17
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
+- id: field-18-1
+  title: Open Field
+  description: A wide open field stretches before you.
+  coordinates:
+    - 18
+    - 1
+    - 0
+  metadata:
+    mapType: field
+    terrain: field
+    moveCost: 1
