@@ -2,7 +2,7 @@
 
 const sprintf = require('sprintf-js').sprintf;
 const LevelUtil = require('../bundle-example-lib/lib/LevelUtil');
-const { Broadcast: B, Config, Inventory, Logger } = require('ranvier');
+const { Broadcast: B, Config, Logger } = require('ranvier');
 
 const DECAY_INTERVAL_MS = 5 * 60 * 1000;
 const DECAY_AMOUNT      = 1;
@@ -11,13 +11,12 @@ module.exports = {
   listeners: {
     login: state => function () {
       const strength = this.getAttribute('strength') || 10;
+      const max = 10 + strength;
 
-      if (!this.inventory) {
-        this.inventory = new Inventory();
+      if (this.inventory) {
+        this.inventory.setMax(max);
       }
 
-      const max = 10 + strength;
-      this.inventory.setMax(max);
       this.setMeta('inventoryMax', max);
 
       this._lastHungerDecay = Date.now();

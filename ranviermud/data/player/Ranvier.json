@@ -1,0 +1,145 @@
+{
+  "attributes": {
+    "strength": {
+      "delta": 0,
+      "base": 12
+    },
+    "dexterity": {
+      "delta": 0,
+      "base": 10
+    },
+    "constitution": {
+      "delta": 0,
+      "base": 10
+    },
+    "intelligence": {
+      "delta": 0,
+      "base": 10
+    },
+    "wisdom": {
+      "delta": 0,
+      "base": 10
+    },
+    "charisma": {
+      "delta": 0,
+      "base": 10
+    },
+    "health": {
+      "delta": 0,
+      "base": 20
+    },
+    "mana": {
+      "delta": 0,
+      "base": 20
+    },
+    "hunger": {
+      "delta": 0,
+      "base": 100
+    },
+    "thirst": {
+      "delta": 0,
+      "base": 100
+    }
+  },
+  "level": 1,
+  "name": "Ranvier",
+  "room": "limbo:white",
+  "effects": [],
+  "experience": 0,
+  "inventory": {
+    "items": [],
+    "max": 16
+  },
+  "metadata": {
+    "stats": {
+      "strength": 12,
+      "dexterity": 10,
+      "constitution": 10,
+      "intelligence": 10,
+      "wisdom": 10,
+      "charisma": 10
+    },
+    "race": "human",
+    "loggedIn": true,
+    "inventoryMax": 22
+  },
+  "prompt": "> ",
+  "quests": {
+    "completed": [],
+    "active": [
+      [
+        "limbo:journeybegins",
+        {
+          "state": [
+            {
+              "state": {
+                "count": 0
+              },
+              "progress": {
+                "percent": 0,
+                "display": "Find a Weapon: [0/1]"
+              },
+              "config": {
+                "title": "Find a Weapon",
+                "removeItem": false,
+                "count": 1,
+                "item": "limbo:rustysword"
+              }
+            },
+            {
+              "state": {
+                "count": 0
+              },
+              "progress": {
+                "percent": 0,
+                "display": "Find Some Armor: [0/1]"
+              },
+              "config": {
+                "title": "Find Some Armor",
+                "removeItem": false,
+                "count": 1,
+                "item": "limbo:leathervest"
+              }
+            },
+            {
+              "state": {
+                "equipped": false
+              },
+              "progress": {
+                "percent": 0,
+                "display": "Wield A Weapon: Not Equipped"
+              },
+              "config": {
+                "title": "Wield A Weapon",
+                "slot": "wield"
+              }
+            },
+            {
+              "state": {
+                "equipped": false
+              },
+              "progress": {
+                "percent": 0,
+                "display": "Equip Some Armor: Not Equipped"
+              },
+              "config": {
+                "title": "Equip Some Armor",
+                "slot": "chest"
+              }
+            }
+          ],
+          "progress": {
+            "percent": 0,
+            "display": "Find a Weapon: [0/1]\r\nFind Some Armor: [0/1]\r\nWield A Weapon: Not Equipped\r\nEquip Some Armor: Not Equipped"
+          },
+          "config": {
+            "level": 1,
+            "title": "A Journey Begins"
+          }
+        }
+      ]
+    ]
+  },
+  "role": 0,
+  "equipment": {}
+}
