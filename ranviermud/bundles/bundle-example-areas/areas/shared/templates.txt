@@ -28,3 +28,43 @@
         chance: 40
       - id: "area:item-id"
         chance: 5
+
+
+#----ONE HANDED WEAPONS----#
+- id: weapon-id
+  name: "Weapon Name"
+  type: WEAPON
+  roomDesc: "A weapon lies here."
+  keywords: [keyword, keyword, weapon]
+  description: "A description of the weapon."
+  metadata:
+    slot: wield
+    minDamage: 5
+    maxDamage: 10
+    speed: 2.0
+    ac: 0
+    requires:
+      strength: 10
+    sellable:
+      value: 25
+      currency: gold
+
+#----TWO HANDED WEAPONS----#
+- id: weapon-id
+  name: "Weapon Name"
+  type: WEAPON
+  roomDesc: "A large weapon lies here."
+  keywords: [keyword, keyword, weapon, two-handed]
+  description: "A description of the weapon."
+  metadata:
+    slot: wield
+    twoHanded: true
+    minDamage: 10
+    maxDamage: 20
+    speed: 3.0
+    ac: 0
+    requires:
+      strength: 15
+    sellable:
+      value: 50
+      currency: gold
