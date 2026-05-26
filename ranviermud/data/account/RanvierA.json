@@ -16,6 +16,10 @@
     {
       "username": "Ranvier",
       "deleted": false
+    },
+    {
+      "username": "Greg",
+      "deleted": false
     }
   ],
   "password": "$2a$10$4tMQttu1wPGKWzbpVFGwduz.aMFj9b46MmfpPRPZdNdG8IfcmIVLa",

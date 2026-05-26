@@ -27,11 +27,28 @@ module.exports = {
       return say(player, `You can't wear ${ItemUtil.display(item)}.`);
     }
 
+    // Check stat requirements
     const requires = item.metadata.requires || {};
     for (const [stat, minimum] of Object.entries(requires)) {
       if ((player.getAttribute(stat) || 0) < minimum) {
         const statName = stat.charAt(0).toUpperCase() + stat.slice(1);
         return say(player, `You need at least ${minimum} ${statName} to equip that.`);
+      }
+    }
+
+    // Check if equipping a two-handed weapon while offhand is occupied
+    if (item.metadata.twoHanded && item.metadata.slot === 'wield') {
+      const offhand = player.equipment.get('offhand');
+      if (offhand) {
+        return say(player, `You need a free offhand to wield ${ItemUtil.display(item)} with both hands. Remove ${ItemUtil.display(offhand)} first.`);
+      }
+    }
+
+    // Check if equipping an offhand while a two-handed weapon is wielded
+    if (item.metadata.slot === 'offhand') {
+      const wield = player.equipment.get('wield');
+      if (wield && wield.metadata.twoHanded) {
+        return say(player, `You can't use an offhand while wielding ${ItemUtil.display(wield)} with both hands.`);
       }
     }
 

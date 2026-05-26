@@ -1,0 +1,58 @@
+#----MONSTERS----#
+
+
+#----GOBLINOIDS----#
+- id: goblin-warrior
+  name: "Goblin Warrior"
+  description: "A small, wiry creature with green skin, clad in what looks like makeshift plate armor."
+  level: 2
+
+  attributes:
+    health: 10
+    strength: 8
+    dexterity: 15
+    constitution: 10
+    intelligence: 10
+    wisdom: 8
+    charisma: 8
+
+  behaviors:
+    - ranvier-aggro
+
+  metadata:
+    ac: 15
+    xp: 50
+    minDamage: 3
+    maxDamage: 8
+    image: bestiary/shared-goblin-warrior.png 
+    loot:
+     - id: "shared:crude-scimitar"
+       chance: 65
+
+
+- id: goblin-minion
+  name: "Goblin Minion"
+  description: "A small, wiry creature with green skin and beady yellow eyes."
+  level: 1
+
+  attributes:
+    health: 7
+    strength: 8
+    dexterity: 15
+    constitution: 10
+    intelligence: 10
+    wisdom: 8
+    charisma: 8
+
+  behaviors:
+    - ranvier-aggro
+
+  metadata:
+    ac: 12
+    xp: 25
+    minDamage: 3
+    maxDamage: 6
+    image: bestiary/shared-goblin.png
+    loot:
+      - id: "shared:copper-coin"
+        chance: 80

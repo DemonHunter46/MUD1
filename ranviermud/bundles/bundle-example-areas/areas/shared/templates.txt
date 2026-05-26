@@ -1,0 +1,30 @@
+#----TOP TEMPLATE FOR MONSTERS----#
+- id: monster-id
+  name: "Monster Name"
+  description: "Description shown when the player looks at the monster."
+  level: 1
+
+  attributes:
+    health: 10
+    strength: 10
+    dexterity: 10
+    constitution: 10
+    intelligence: 10
+    wisdom: 10
+    charisma: 10
+
+  behaviors:
+    - ranvier-aggro
+
+  metadata:
+    ac: 10
+    xp: 200
+    weapon: "shared:weapon-id"
+    image: bestiary/area-monsterid.png
+    loot:
+      - id: "area:item-id"
+        chance: 100
+      - id: "area:item-id"
+        chance: 40
+      - id: "area:item-id"
+        chance: 5

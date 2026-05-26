@@ -21,6 +21,8 @@ module.exports = {
       updateStats.call(this);
       updateMap.call(this);
       updateInventory.call(this);
+      updateJournal.call(this);
+      updateBestiary.call(this);
 
       this.socket.command('sendData', 'factions', [
         { name: 'Town Guard',      value: 0 },
@@ -62,6 +64,18 @@ module.exports = {
       updateTargets.call(this);
     },
 
+    questComplete: state => function () {
+      updateJournal.call(this);
+    },
+
+    questStart: state => function () {
+      updateJournal.call(this);
+    },
+
+    deathblow: state => function () {
+      updateBestiary.call(this);
+    },
+
     updateTick: state => function () {
       const effects = this.effects.entries()
         .filter(effect => !effect.config.hidden)
@@ -91,6 +105,7 @@ module.exports = {
 
     questProgress: state => function () {
       this.socket.command('sendData', 'quests', this.questTracker.serialize().active);
+      updateJournal.call(this);
     },
 
     level: state => function () {
@@ -214,6 +229,20 @@ function updateInventory() {
     max:   inventoryMax,
     items: items,
   });
+}
+
+function updateJournal() {
+  const journal = this.getMeta('journal') || {
+    quests:    { completed: [], active: null },
+    locations: [],
+    trades:    [],
+  };
+  this.socket.command('sendData', 'journal', journal);
+}
+
+function updateBestiary() {
+  const bestiary = this.getMeta('bestiary') || {};
+  this.socket.command('sendData', 'bestiary', Object.values(bestiary));
 }
 
 function updateTargets() {

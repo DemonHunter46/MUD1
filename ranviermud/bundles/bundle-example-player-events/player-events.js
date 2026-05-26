@@ -7,6 +7,32 @@ const { Broadcast: B, Config, Logger } = require('ranvier');
 const DECAY_INTERVAL_MS = 5 * 60 * 1000;
 const DECAY_AMOUNT      = 1;
 
+// Helper to initialise journal structure
+function getJournal(player) {
+  const journal = player.getMeta('journal') || {
+    quests:    { completed: [], active: null },
+    locations: [],
+    trades:    [],
+  };
+  return journal;
+}
+
+// Helper to save journal back to metadata
+function saveJournal(player, journal) {
+  player.setMeta('journal', journal);
+  player.save();
+}
+
+// Helper to initialise bestiary
+function getBestiary(player) {
+  return player.getMeta('bestiary') || {};
+}
+
+function saveBestiary(player, bestiary) {
+  player.setMeta('bestiary', bestiary);
+  player.save();
+}
+
 module.exports = {
   listeners: {
     login: state => function () {
@@ -21,6 +47,19 @@ module.exports = {
 
       this._lastHungerDecay = Date.now();
       this._lastThirstDecay = Date.now();
+
+      // Initialise journal and bestiary if not present
+      if (!this.getMeta('journal')) {
+        this.setMeta('journal', {
+          quests:    { completed: [], active: null },
+          locations: [],
+          trades:    [],
+        });
+      }
+
+      if (!this.getMeta('bestiary')) {
+        this.setMeta('bestiary', {});
+      }
     },
 
     move: state => function (movementCommand) {
@@ -70,6 +109,25 @@ module.exports = {
       B.sayAt(oldRoom, `${this.name} leaves.`);
       B.sayAtExcept(nextRoom, `${this.name} enters.`, this);
 
+      // Record location visit in journal
+      const journal = getJournal(this);
+      const locationEntry = {
+        room:      nextRoom.entityReference,
+        title:     nextRoom.title,
+        timestamp: Date.now(),
+      };
+
+      // Only record if not the last visited location
+      const lastLocation = journal.locations[journal.locations.length - 1];
+      if (!lastLocation || lastLocation.room !== nextRoom.entityReference) {
+        journal.locations.push(locationEntry);
+        // Keep last 50 locations
+        if (journal.locations.length > 50) {
+          journal.locations.shift();
+        }
+        saveJournal(this, journal);
+      }
+
       for (const follower of this.followers) {
         if (follower.room !== oldRoom) {
           continue;
@@ -82,6 +140,65 @@ module.exports = {
           follower.emit('move', movementCommand);
         }
       }
+    },
+
+    // Record NPC encounter in bestiary when combat starts
+    combatantAdded: state => function (target) {
+      if (!target.isNpc) return;
+
+      const bestiary = getBestiary(this);
+      const key = target.entityReference;
+
+      if (!bestiary[key]) {
+        bestiary[key] = {
+          id:          key,
+          name:        target.name,
+          level:       target.level || 1,
+          ac:          (target.metadata && target.metadata.ac)  || 0,
+          xp:          (target.metadata && target.metadata.xp)  || 0,
+          health:      target.getMaxAttribute('health')         || 0,
+          description: target.description                       || '',
+          image:       `bestiary/${key.replace(':', '-')}.png`,
+          firstSeen:   Date.now(),
+          killCount:   0,
+        };
+        saveBestiary(this, bestiary);
+        B.sayAt(this, `<yellow>[Bestiary] New entry: ${target.name}</yellow>`);
+      }
+    },
+
+    // Increment kill count in bestiary on kill
+    deathblow: state => function (target) {
+      if (!target.isNpc) return;
+
+      const bestiary = getBestiary(this);
+      const key = target.entityReference;
+
+      if (bestiary[key]) {
+        bestiary[key].killCount = (bestiary[key].killCount || 0) + 1;
+        saveBestiary(this, bestiary);
+      }
+    },
+
+    // Record completed quests in journal
+    questComplete: state => function (quest) {
+      const journal = getJournal(this);
+      journal.quests.completed.push({
+        title:       quest.config.title,
+        completedAt: Date.now(),
+      });
+      journal.quests.active = null;
+      saveJournal(this, journal);
+    },
+
+    // Track active quest
+    questStart: state => function (quest) {
+      const journal = getJournal(this);
+      journal.quests.active = {
+        title: quest.config.title,
+        tasks: [],
+      };
+      saveJournal(this, journal);
     },
 
     save: state => async function (callback) {

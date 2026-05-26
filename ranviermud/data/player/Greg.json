@@ -2,11 +2,11 @@
   "attributes": {
     "strength": {
       "delta": 0,
-      "base": 12
+      "base": 10
     },
     "dexterity": {
       "delta": 0,
-      "base": 10
+      "base": 11
     },
     "constitution": {
       "delta": 0,
@@ -14,7 +14,7 @@
     },
     "intelligence": {
       "delta": 0,
-      "base": 10
+      "base": 12
     },
     "wisdom": {
       "delta": 0,
@@ -30,19 +30,19 @@
     },
     "mana": {
       "delta": 0,
-      "base": 20
+      "base": 24
     },
     "hunger": {
-      "delta": -6,
+      "delta": -7,
       "base": 100
     },
     "thirst": {
-      "delta": -6,
+      "delta": -7,
       "base": 100
     }
   },
   "level": 1,
-  "name": "Ranvier",
+  "name": "Greg",
   "room": "limbo:white",
   "effects": [
     {
@@ -59,13 +59,13 @@
         "type": "regen",
         "unique": true
       },
-      "elapsed": 2531073,
+      "elapsed": 2353013,
       "id": "regen",
       "remaining": null,
       "state": {
         "magnitude": 15,
-        "lastTick": 217,
-        "ticks": 1371
+        "lastTick": 1860,
+        "ticks": 1599
       }
     },
     {
@@ -82,7 +82,7 @@
         "type": "equip.wield",
         "unique": true
       },
-      "elapsed": 1293697,
+      "elapsed": 2307199,
       "id": "equip",
       "remaining": null,
       "state": {
@@ -106,7 +106,7 @@
         "type": "equip.chest",
         "unique": true
       },
-      "elapsed": 1288209,
+      "elapsed": 2301616,
       "id": "equip",
       "remaining": null,
       "state": {
@@ -117,87 +117,101 @@
       }
     }
   ],
-  "experience": 200,
-  "inventory": {
-    "items": [
-      [
-        "d2d38bbc-1a29-4619-8b59-c709c42b70ad",
-        {
-          "entityReference": "limbo:potionhealth1",
-          "inventory": null,
-          "metadata": {
-            "level": 1,
-            "usable": {
-              "spell": "potion",
-              "charges": 5,
-              "destroyOnDepleted": true,
-              "cooldown": 30,
-              "options": {
-                "restores": 30,
-                "stat": "health"
-              }
-            }
-          },
-          "description": "Nothing special.",
-          "keywords": [
-            "potion",
-            "health"
-          ],
-          "name": "Potion of Health I",
-          "roomDesc": "Potion of Health I",
-          "closed": false,
-          "locked": false,
-          "behaviors": {}
-        }
-      ],
-      [
-        "1c6e76ad-9fa0-4579-876f-14ac9a0a9ab8",
-        {
-          "entityReference": "limbo:potionstrength1",
-          "inventory": null,
-          "metadata": {
-            "level": 1,
-            "usable": {
-              "effect": "potion.buff",
-              "charges": 2,
-              "destroyOnDepleted": true,
-              "config": {
-                "description": "Increases strength by <b>10</b> for <b>15</b> seconds",
-                "duration": 15000
-              },
-              "state": {
-                "magnitude": 10,
-                "stat": "strength"
-              }
-            }
-          },
-          "description": "Nothing special.",
-          "keywords": [
-            "potion",
-            "strength"
-          ],
-          "name": "Potion of Strength I",
-          "roomDesc": "Potion of Strength I",
-          "closed": false,
-          "locked": false,
-          "behaviors": {}
-        }
-      ]
-    ],
-    "max": 22
-  },
+  "experience": 250,
+  "inventory": null,
   "metadata": {
     "stats": {
-      "strength": 12,
-      "dexterity": 10,
+      "strength": 10,
+      "dexterity": 11,
       "constitution": 10,
-      "intelligence": 10,
+      "intelligence": 12,
       "wisdom": 10,
       "charisma": 10
     },
-    "race": "human",
+    "race": "gnome",
+    "subrace": "deep",
     "loggedIn": true,
-    "inventoryMax": 22
+    "inventoryMax": 20,
+    "journal": {
+      "quests": {
+        "completed": [],
+        "active": null
+      },
+      "locations": [
+        {
+          "room": "limbo:black",
+          "title": "Black Room",
+          "timestamp": 1779775097371
+        },
+        {
+          "room": "limbo:white",
+          "title": "White Room",
+          "timestamp": 1779775101985
+        },
+        {
+          "room": "limbo:wallys",
+          "title": "Wally's Wonderful Wares (Shop)",
+          "timestamp": 1779775103593
+        },
+        {
+          "room": "limbo:white",
+          "title": "White Room",
+          "timestamp": 1779775105529
+        },
+        {
+          "room": "mapped:start",
+          "title": "Begin",
+          "timestamp": 1779775107929
+        },
+        {
+          "room": "mapped:hallway-south-1",
+          "title": "Hallway South 1",
+          "timestamp": 1779775113729
+        },
+        {
+          "room": "mapped:hallway-south-2",
+          "title": "Hallway South 2",
+          "timestamp": 1779775115865
+        },
+        {
+          "room": "mapped:attic-south",
+          "title": "Attic",
+          "timestamp": 1779778738182
+        },
+        {
+          "room": "limbo:white",
+          "title": "White Room",
+          "timestamp": 1779778743159
+        },
+        {
+          "room": "limbo:ancientwayshrine",
+          "title": "Ancient Wayshrine",
+          "timestamp": 1779778895559
+        },
+        {
+          "room": "limbo:white",
+          "title": "White Room",
+          "timestamp": 1779778901446
+        },
+        {
+          "room": "limbo:wallys",
+          "title": "Wally's Wonderful Wares (Shop)",
+          "timestamp": 1779778904782
+        },
+        {
+          "room": "limbo:white",
+          "title": "White Room",
+          "timestamp": 1779778906686
+        },
+        {
+          "room": "limbo:black",
+          "title": "Black Room",
+          "timestamp": 1779778907719
+        }
+      ],
+      "trades": []
+    },
+    "bestiary": {}
   },
   "prompt": "> ",
   "quests": {
@@ -205,41 +219,12 @@
       [
         "limbo:journeybegins",
         {
-          "completedAt": "2026-05-25T15:37:05.795Z"
+          "started": "2026-05-25T20:55:54.151Z",
+          "completedAt": "2026-05-25T20:56:45.554Z"
         }
       ]
     ],
-    "active": [
-      [
-        "limbo:selfdefense101",
-        {
-          "state": [
-            {
-              "state": {
-                "count": 0
-              },
-              "progress": {
-                "percent": 0,
-                "display": "Kill a Training Dummy: [0/1]"
-              },
-              "config": {
-                "title": "Kill a Training Dummy",
-                "npc": "limbo:trainingdummy",
-                "count": 1
-              }
-            }
-          ],
-          "progress": {
-            "percent": 0,
-            "display": "Kill a Training Dummy: [0/1]"
-          },
-          "config": {
-            "level": 2,
-            "title": "Self Defense 101"
-          }
-        }
-      ]
-    ]
+    "active": []
   },
   "role": 0,
   "equipment": {

@@ -1,0 +1,27 @@
+
+#----MISC----#
+- id: copper-coin
+  name: "Copper Coin"
+  type: CURRENCY
+  roomDesc: "A copper coin lies here."
+  keywords: [coin, copper]
+  description: "A small copper coin."
+  metadata:
+    value: 1
+    currency: copper
+
+
+#----WEAPONS (MELEE)----#
+
+#----ONE HANDED BLADE----#
+- id: crude-scimitar
+  name: "Crude Scimitar"
+  type: WEAPONS
+  roomDesc: "A strangely shaped sword lies here."
+  keywords: [sword, scimitar, weapon]
+  description: "A crudely smithed Scimitar"
+  metadata:
+    slot: wield
+    minDamage: 3
+    maxDamage: 8
+    speed: 3.0
