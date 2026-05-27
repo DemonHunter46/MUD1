@@ -100,15 +100,11 @@ class Combat {
       }
     }
 
-    // Calculate AC based on whether target is NPC or player
+    // Calculate AC by summing equipped armor for both players and NPCs
     let ac = 0;
-    if (target.isNpc) {
-      ac = (target.metadata && target.metadata.ac) || 0;
-    } else {
-      for (const [slot, item] of target.equipment) {
-        if (item.metadata && item.metadata.ac) {
-          ac += item.metadata.ac;
-        }
+    for (const [slot, item] of target.equipment) {
+      if (item.metadata && item.metadata.ac) {
+        ac += item.metadata.ac;
       }
     }
 
@@ -225,15 +221,13 @@ class Combat {
    * Get the damage of the weapon the character is wielding.
    * Priority order:
    *   1. Equipped weapon metadata
-   *   2. NPC weapon reference in metadata (looks up item definition)
-   *   3. NPC explicit minDamage/maxDamage in metadata (fallback)
-   *   4. Unarmed fallback scaled to strength
+   *   2. Unarmed fallback scaled to strength
    * @param {GameState} state
    * @param {Character} attacker
    * @return {{max: number, min: number}}
    */
   static getWeaponDamage(state, attacker) {
-    // 1. Equipped weapon
+    // 1. Equipped weapon — works for both players and NPCs
     const weapon = attacker.equipment.get('wield');
     if (weapon) {
       return {
@@ -242,27 +236,7 @@ class Combat {
       };
     }
 
-    // 2. NPC weapon reference — looks up item definition by entity reference
-    if (attacker.isNpc && attacker.metadata && attacker.metadata.weapon) {
-      const weaponDef = state.ItemFactory.getDefinition(attacker.metadata.weapon);
-      if (weaponDef && weaponDef.metadata) {
-        return {
-          min: weaponDef.metadata.minDamage || 1,
-          max: weaponDef.metadata.maxDamage || 2,
-        };
-      }
-    }
-
-    // 3. NPC explicit damage values in metadata
-    if (attacker.isNpc && attacker.metadata) {
-      const min = attacker.metadata.minDamage;
-      const max = attacker.metadata.maxDamage;
-      if (min !== undefined && max !== undefined) {
-        return { min, max };
-      }
-    }
-
-    // 4. Unarmed fallback scaled to strength
+    // 2. Unarmed fallback scaled to strength
     const strength = attacker.hasAttribute('strength') ? attacker.getAttribute('strength') : 1;
     return {
       min: Math.max(1, Math.floor(strength / 5)),
@@ -272,7 +246,7 @@ class Combat {
 
   /**
    * Get the speed of the currently equipped weapon adjusted by dexterity.
-   * If NPC has a weapon reference in metadata, uses that weapon's speed.
+   * Works for both players and NPCs.
    * Higher dexterity reduces attack lag up to a maximum of 30%.
    * Minimum attack speed is capped at 0.5 seconds regardless of DEX.
    * @param {GameState} state
@@ -283,15 +257,8 @@ class Combat {
     let speed = 2.0;
     const weapon = attacker.equipment.get('wield');
 
-    if (weapon) {
-      // Equipped weapon speed
-      speed = weapon.metadata.speed || 2.0;
-    } else if (attacker.isNpc && attacker.metadata && attacker.metadata.weapon) {
-      // NPC weapon reference — use that weapon's speed
-      const weaponDef = state.ItemFactory.getDefinition(attacker.metadata.weapon);
-      if (weaponDef && weaponDef.metadata && weaponDef.metadata.speed) {
-        speed = weaponDef.metadata.speed;
-      }
+    if (weapon && weapon.metadata.speed) {
+      speed = weapon.metadata.speed;
     }
 
     // Apply dexterity modifier for everyone

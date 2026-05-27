@@ -2,10 +2,32 @@
 
 
 #----GOBLINOIDS----#
+- id: goblin-boss
+  name: "Goblin Boss"
+  description: "A slighty larger, yet wiry creauture who seems to top of the pecking order."
+  level: 1
+
+  attributes:
+    health: 21
+    strength:
+    dexterity:
+    constitution:
+    intelligence:
+    wisdom:
+    charisma:
+
+  behaviors:
+    - ranvier-aggro
+
+  metadata:
+    xp:
+
+
+
 - id: goblin-warrior
   name: "Goblin Warrior"
   description: "A small, wiry creature with green skin, clad in what looks like makeshift plate armor."
-  level: 2
+  level: 1
 
   attributes:
     health: 10
@@ -19,11 +41,13 @@
   behaviors:
     - ranvier-aggro
 
+  equipment:
+    wield: "shared:crude-scimitar"
+    chest:  "shared:leather-armour"
+  
   metadata:
-    ac: 15
+    cr: "1/4"
     xp: 50
-    minDamage: 3
-    maxDamage: 8
     image: bestiary/shared-goblin-warrior.png 
     loot:
      - id: "shared:crude-scimitar"
@@ -47,11 +71,11 @@
   behaviors:
     - ranvier-aggro
 
+  equipment:
+  
   metadata:
-    ac: 12
+    cr: "1/8"
     xp: 25
-    minDamage: 3
-    maxDamage: 6
     image: bestiary/shared-goblin.png
     loot:
       - id: "shared:copper-coin"
