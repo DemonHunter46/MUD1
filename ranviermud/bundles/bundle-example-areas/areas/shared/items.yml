@@ -13,8 +13,28 @@
 
 #----WEAPONS (MELEE)----#
 
-#----ONE HANDED BLADE----#
-- id: crude-scimitar
+
+
+
+
+#----TIER 1 (COPPER OR LESS) SIMPLE MELEE WEAPONS----#
+- id: wooden-club
+  name: "Wooden Club"
+  type: WEAPONS
+  roomDesc: "A rough club shaped piece of wood lies here."
+  keywords: [club, weapon]
+  description: "A crude piece of wood, fashioned into a simple club."
+  metadata:
+    slot: wield
+    minDamage: 1
+    maxDamage: 4
+    speed: 1.0
+    ac: 0
+    requires:
+      strength: 4
+
+
+- id: crude-copper-scimitar
   name: "Crude Scimitar"
   type: WEAPONS
   roomDesc: "A strangely shaped sword lies here."
@@ -24,7 +44,7 @@
     slot: wield
     minDamage: 3
     maxDamage: 8
-    speed: 3.0
+    speed: 2.0
     ac: 0
     requires:
-      strength: 4
+      strength: 5

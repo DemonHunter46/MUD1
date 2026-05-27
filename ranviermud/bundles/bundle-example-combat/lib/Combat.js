@@ -60,7 +60,7 @@ class Combat {
 
   /**
    * Find a target for a given attacker.
-   * Simple first-attacker aggro — mob always attacks whoever is first in combatants.
+   * Simple first-attacker aggro — always attack the first combatant in the set.
    * @param {Character} attacker
    * @return {Character|null}
    */
@@ -82,7 +82,7 @@ class Combat {
   }
 
   /**
-   * Get the next living combatant after a kill — enables hit rollover
+   * Get the next living combatant after a kill — enables Aardwolf-style hit rollover.
    * @param {Character} attacker
    * @param {Character} deadTarget
    * @return {Character|null}
@@ -101,29 +101,59 @@ class Combat {
   }
 
   /**
-   * Execute a full combat round — multiple hits per round with rollover.
-   * Fixed 3 second round lag matching Aardwolf's system.
+   * Calculate total hits for this round.
+   *
+   * Formula:
+   *   baseHits  = weapon speed determines base swing rate (faster = more swings)
+   *   dexBonus  = DEX above 10 adds hits (+1 per 4 DEX) — nimbler = more openings
+   *   strBonus  = STR above 10 adds hits (+1 per 6 STR) — stronger = forces more swings
+   *   levelBonus = players gain +1 hit per 5 levels (NPCs use stats only)
+   *
+   * @param {Character} attacker
+   * @return {number}
+   */
+  static calculateHits(attacker) {
+    const weapon    = attacker.equipment.get('wield');
+    const speed     = weapon && weapon.metadata.speed ? weapon.metadata.speed : 2.0;
+    const strength  = attacker.hasAttribute('strength')  ? attacker.getAttribute('strength')  : 10;
+    const dexterity = attacker.hasAttribute('dexterity') ? attacker.getAttribute('dexterity') : 10;
+
+    // Base hits from weapon speed — faster weapons swing more often
+    const baseHits = Math.max(1, Math.round(3 / speed));
+
+    // DEX contributes more to hit count than STR
+    // DEX represents speed and technique — finding more openings
+    const dexBonus = Math.floor(Math.max(0, dexterity - 10) / 4);
+
+    // STR contributes less to hit count — raw power forces occasional extra swings
+    const strBonus = Math.floor(Math.max(0, strength - 10) / 6);
+
+    // Level bonus for players only — veteran fighters attack more efficiently
+    // NPCs derive all their combat power from stats alone
+    const levelBonus = attacker.isNpc ? 0 : Math.floor(attacker.level / 5);
+
+    return Math.max(1, baseHits + dexBonus + strBonus + levelBonus);
+  }
+
+  /**
+   * Execute a full combat round — multiple hits with Aardwolf-style rollover.
+   * Fixed 3 second round lag.
+   *
    * @param {GameState} state
    * @param {Character} attacker
    * @param {Character} target
    */
   static makeAttack(state, attacker, target) {
-    const weapon    = attacker.equipment.get('wield');
-    const strength  = attacker.hasAttribute('strength')  ? attacker.getAttribute('strength')  : 10;
-    const dexterity = attacker.hasAttribute('dexterity') ? attacker.getAttribute('dexterity') : 10;
-
-    // Calculate hits this round
-    // Base hits from weapon or default 2, plus stat bonuses
-    const baseHits = weapon ? (weapon.metadata.hits || 2) : 2;
-    const strBonus = Math.floor(Math.max(0, strength  - 10) / 4);
-    const dexBonus = Math.floor(Math.max(0, dexterity - 10) / 4);
-    const totalHits = Math.max(1, baseHits + strBonus + dexBonus);
-
+    const totalHits   = this.calculateHits(attacker);
     let currentTarget = target;
 
     for (let i = 0; i < totalHits; i++) {
-      // If current target is dead roll over to next
-      if (!currentTarget || currentTarget.combatData.killed || currentTarget.getAttribute('health') <= 0) {
+      // Roll over to next target if current target died mid-round
+      if (
+        !currentTarget ||
+        currentTarget.combatData.killed ||
+        currentTarget.getAttribute('health') <= 0
+      ) {
         currentTarget = this.getNextCombatant(attacker, currentTarget);
         if (!currentTarget) break;
       }
@@ -139,7 +169,7 @@ class Combat {
         }
       }
 
-      // AC reduction from all equipped armor
+      // AC reduction — sum all equipped armor for both players and NPCs
       let ac = 0;
       for (const [slot, item] of currentTarget.equipment) {
         if (item.metadata && item.metadata.ac) {
@@ -154,11 +184,12 @@ class Combat {
 
       amount = Math.max(1, amount);
 
+      const weapon = attacker.equipment.get('wield');
       const damage = new Damage('health', amount, attacker, weapon || attacker, { critical, type: 'physical' });
       damage.commit(currentTarget);
     }
 
-    // Fixed 3 second round lag — same as Aardwolf
+    // Fixed 3 second round — same as Aardwolf
     attacker.combatData.lag = ROUND_LENGTH;
   }
 
@@ -259,10 +290,10 @@ class Combat {
   }
 
   /**
-   * Get the damage of the weapon the character is wielding.
+   * Get the damage range of the weapon the character is wielding.
    * Priority:
-   *   1. Equipped weapon
-   *   2. Unarmed scaled to strength
+   *   1. Equipped weapon metadata
+   *   2. Unarmed fallback scaled to strength
    * @param {GameState} state
    * @param {Character} attacker
    * @return {{max: number, min: number}}
@@ -276,7 +307,7 @@ class Combat {
       };
     }
 
-    // Unarmed fallback scaled to strength
+    // Unarmed — scaled to strength
     const strength = attacker.hasAttribute('strength') ? attacker.getAttribute('strength') : 1;
     return {
       min: Math.max(1, Math.floor(strength / 5)),
@@ -285,43 +316,38 @@ class Combat {
   }
 
   /**
-   * Get weapon speed adjusted by dexterity.
-   * In the new round system speed is not used for lag — lag is always ROUND_LENGTH.
-   * Speed is still used in normalizeWeaponDamage to scale damage per hit.
-   * @param {GameState} state
-   * @param {Character} attacker
-   * @return {number}
-   */
-  static getWeaponSpeed(state, attacker) {
-    let speed = 2.0;
-    const weapon = attacker.equipment.get('wield');
-
-    if (weapon && weapon.metadata.speed) {
-      speed = weapon.metadata.speed;
-    }
-
-    // DEX modifier — each point above 10 = 1% faster, capped at 30%
-    if (attacker.hasAttribute('dexterity')) {
-      const dex = attacker.getAttribute('dexterity') || 10;
-      const dexBonus = Math.min(0.30, (dex - 10) * 0.01);
-      speed = Math.max(0.5, speed * (1 - dexBonus));
-    }
-
-    return speed;
-  }
-
-  /**
-   * Get a damage amount adjusted by strength and weapon speed.
-   * Weapon speed still affects damage per hit — slower weapons hit harder.
+   * Normalise weapon damage.
+   * Speed no longer multiplies damage — it only affects hit count via calculateHits.
+   * Strength adds a flat bonus to every hit.
+   * Dividing by 3.5 keeps the bonus reasonable at all stat levels.
+   *
+   * STR 10 → +2 per hit
+   * STR 14 → +4 per hit
+   * STR 18 → +5 per hit
+   * STR 30 → +8 per hit
+   *
    * @param {GameState} state
    * @param {Character} attacker
    * @param {number} amount
    * @return {number}
    */
   static normalizeWeaponDamage(state, attacker, amount) {
-    let speed = this.getWeaponSpeed(state, attacker);
-    amount += attacker.hasAttribute('strength') ? attacker.getAttribute('strength') : attacker.level;
-    return Math.round(amount / 3.5 * speed);
+    const strength = attacker.hasAttribute('strength') ? attacker.getAttribute('strength') : attacker.level;
+    return Math.round(amount + (strength / 3.5));
+  }
+
+  /**
+   * Get weapon speed — used only by calculateHits, not damage.
+   * @param {GameState} state
+   * @param {Character} attacker
+   * @return {number}
+   */
+  static getWeaponSpeed(state, attacker) {
+    const weapon = attacker.equipment.get('wield');
+    if (weapon && weapon.metadata.speed) {
+      return weapon.metadata.speed;
+    }
+    return 2.0;
   }
 }
 

@@ -110,7 +110,7 @@
     - combat
 
   equipment:
-    wield: "shared:crude-dagger"
+    wield: "shared:wooden-club"
   
   metadata:
     cr: "1/8"
