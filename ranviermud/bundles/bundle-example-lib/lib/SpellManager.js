@@ -1,0 +1,66 @@
+'use strict';
+
+const SPELLS = {
+  rayoffrost: {
+    name: 'Ray of Frost',
+    description: 'Fires a beam of freezing energy at your target.',
+    manaCost: 1,
+    cooldown: 3,
+    requiresTarget: true,
+    combatOnly: true,
+    minIntelligence: 10,
+    effect: 'spell-ray-of-frost',
+  },
+  magicmissile: {
+    name: 'Magic Missile',
+    description: 'Launches three unerring bolts of magical force.',
+    manaCost: 2,
+    cooldown: 5,
+    requiresTarget: true,
+    combatOnly: true,
+    minIntelligence: 10,
+    effect: 'spell-magic-missile',
+  },
+  heal: {
+    name: 'Heal',
+    description: 'Restores a small amount of health.',
+    manaCost: 2,
+    cooldown: 8,
+    requiresTarget: false,
+    combatOnly: false,
+    minIntelligence: 10,
+    effect: 'spell-heal',
+  },
+  shield: {
+    name: 'Shield',
+    description: 'Conjures a magical barrier reducing incoming damage.',
+    manaCost: 3,
+    cooldown: 15,
+    requiresTarget: false,
+    combatOnly: false,
+    minIntelligence: 12,
+    effect: 'spell-shield',
+  },
+  fireball: {
+    name: 'Fireball',
+    description: 'Hurls a ball of fire that explodes on impact.',
+    manaCost: 5,
+    cooldown: 12,
+    requiresTarget: true,
+    combatOnly: true,
+    minIntelligence: 14,
+    effect: 'spell-fireball',
+  },
+  greaterhealing: {
+    name: 'Greater Healing',
+    description: 'Restores a large amount of health.',
+    manaCost: 8,
+    cooldown: 30,
+    requiresTarget: false,
+    combatOnly: false,
+    minIntelligence: 16,
+    effect: 'spell-greater-healing',
+  },
+};
+
+module.exports = SPELLS;

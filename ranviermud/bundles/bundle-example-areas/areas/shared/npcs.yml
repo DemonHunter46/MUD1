@@ -1,14 +1,20 @@
+
+
+
+
+
+
+
 #----MONSTERS----#
 
-
-#----GOBLINOIDS----#
-- id: goblin-boss
-  name: "Goblin Boss"
-  description: "A slighty larger, yet wiry creauture who seems to top of the pecking order."
+#----CR 3 MONSTERS----#
+- id: goblin-hexer
+  name: "Goblin Hexer"
+  description: "Green, jittery little wiry creature, something feels different about this one as it carries a wooden stave of sorts."
   level: 1
 
   attributes:
-    health: 21
+    health:
     strength:
     dexterity:
     constitution:
@@ -16,17 +22,45 @@
     wisdom:
     charisma:
 
+    behaviours:
+      - ranvier-aggro
+
+    equipment:
+      wield:
+
+
+
+
+#----CR 1 MONSTERS----#
+- id: goblin-boss
+  name: "Goblin Boss"
+  description: "Goblin bosses are often the most imaginative, dis-ruptive, or forceful goblins. Through a combination of luck, cowardice, and callousness, these leaders avoid harm at the expense of their followers."
+  level: 1
+
+  attributes:
+    health: 21
+    strength: 10
+    dexterity: 15
+    constitution: 10
+    intelligence: 10
+    wisdom: 8
+    charisma: 10
+
   behaviors:
     - ranvier-aggro
 
   metadata:
-    xp:
+    cr: "1"
+    xp: 200
+    image: ""
+    loot:
+     - id:
 
 
-
+#----CR 1/4 MONSTERS----#
 - id: goblin-warrior
   name: "Goblin Warrior"
-  description: "A small, wiry creature with green skin, clad in what looks like makeshift plate armor."
+  description: "Goblin warriors excel at causing mischief. Those in service to Maglubiyet have greater discipline and are likely to withdraw to set up ambushes."
   level: 1
 
   attributes:
@@ -54,9 +88,12 @@
        chance: 65
 
 
+
+
+#----CR 1/8 MONSTERS----#
 - id: goblin-minion
   name: "Goblin Minion"
-  description: "A small, wiry creature with green skin and beady yellow eyes."
+  description: "Goblin minions enjoy participating in the disruptive schemes of clever leaders but are quick to flee when confronted by their comeuppance."
   level: 1
 
   attributes:
