@@ -3,78 +3,59 @@
 const { Broadcast: B, Logger } = require('ranvier');
 
 /**
- * A simple behavior to make an NPC aggressive. Aggressive is defined as attacking after some delay
- * when a player or NPC enters the room. An aggressive NPC will only fixate their attention on one
- * target at a time and not when they're already distracted by combat.
+ * Aggro behavior — updated for Aardwolf-style combat.
+ *
+ * When a player enters the room the NPC waits for the configured delay
+ * then initiates combat. The mob always attacks the first player it targeted
+ * (first-attacker aggro). If multiple players are in the room the mob
+ * picks the first one it sees and stays on that target.
+ *
  * Options:
- *   delay: number, seconds after a character enters the room before attacking. Default: 5
- *   warnMessage: string, Message to send to players warning them that the mob will attack soon.
- *     Message supports `%name%` token to place NPC name in message. Message is sent when half of
- *     the delay has passed.
- *     Default '%name% growls, warning you away.'
- *   attackMessage: string, Message to send to players when the mob moves to attack.
- *     Message supports `%name%` token to place NPC name in message.
- *     Default '%name% attacks you!'
+ *   delay: number, seconds before attacking. Default: 3
+ *   warnMessage: string, warning sent at half delay. Supports %name% token.
+ *   attackMessage: string, message sent on attack. Supports %name% token.
  *   towards:
- *     players: boolean, whether the NPC is aggressive towards players. Default: true
- *     npcs: Array<EntityReference>, list of NPC entityReferences which this NPC will attack on sight
- *
- * Example:
- *
- *     # an NPC that's aggressive towards players
- *     behaviors:
- *       ranvier-aggro:
- *         delay: 10
- *         warnMessage: '%name% snarls angrily.'
- *         towards:
- *           players: true
- *           npcs: false
- *
- *     # an NPC that fights enemy NPC squirrels and rabbits
- *     behaviors:
- *       ranvier-aggro:
- *          towards:
- *            players: false
- *            npcs: ["limbo:squirrel", "limbo:rabbit"]
+ *     players: boolean, aggressive towards players. Default: true
+ *     npcs: Array<EntityReference>|boolean, aggressive towards specific NPCs. Default: false
  */
 module.exports = {
   listeners: {
     updateTick: state => function (config) {
-      if (!this.room) {
-        return;
-      }
+      if (!this.room) return;
 
       if (typeof config !== 'object') {
         config = {};
       }
 
-      // setup default configs
       config = Object.assign({
-        delay: 5,
+        delay: 3,
         warnMessage: '%name% growls, warning you away.',
         attackMessage: '%name% attacks you!',
         towards: {
           players: true,
-          npcs: false
+          npcs: false,
         }
       }, config);
 
+      // Already in combat — do nothing, Combat.updateRound handles the fighting
       if (this.isInCombat()) {
         return;
       }
 
+      // Have an aggro target queued
       if (this._aggroTarget) {
+        // Target left the room — clear aggro
         if (this._aggroTarget.room !== this.room) {
           this._aggroTarget = null;
           this._aggroWarned = false;
           return;
         }
 
-        const sinceLastCheck = Date.now() - this._aggroTimer;
-        const delayLength = config.delay * 1000;
+        const elapsed     = Date.now() - this._aggroTimer;
+        const delayMs     = config.delay * 1000;
 
-        // attack
-        if (sinceLastCheck >= delayLength) {
+        // Attack
+        if (elapsed >= delayMs) {
           if (!this._aggroTarget.isNpc) {
             B.sayAt(this._aggroTarget, config.attackMessage.replace(/%name%/, this.name));
           } else {
@@ -86,8 +67,8 @@ module.exports = {
           return;
         }
 
-        // warn
-        if (sinceLastCheck >= delayLength / 2 && !this._aggroTarget.isNpc && !this._aggroWarned) {
+        // Warn at half delay
+        if (elapsed >= delayMs / 2 && !this._aggroTarget.isNpc && !this._aggroWarned) {
           B.sayAt(this._aggroTarget, config.warnMessage.replace(/%name%/, this.name));
           this._aggroWarned = true;
         }
@@ -95,29 +76,44 @@ module.exports = {
         return;
       }
 
-      // try to find a player to be aggressive towards first
+      // Find a target — players first
       if (config.towards.players && this.room.players.size) {
         this._aggroTarget = [...this.room.players][0];
-        this._aggroTimer = Date.now();
+        this._aggroTimer  = Date.now();
         return;
       }
 
+      // Find a target — specific NPCs
       if (config.towards.npcs && this.room.npcs.size) {
         for (const npc of this.room.npcs) {
-          if (npc === this) {
-            continue;
-          }
+          if (npc === this) continue;
 
           if (
             config.towards.npcs === true ||
             (Array.isArray(config.towards.npcs) && config.towards.npcs.includes(npc.entityReference))
           ) {
             this._aggroTarget = npc;
-            this._aggroTimer = Date.now();
+            this._aggroTimer  = Date.now();
             return;
           }
         }
       }
-    }
+    },
+
+    /**
+     * Player enters room — immediately start aggro timer
+     */
+    playerEnter: state => function (config, player) {
+      if (this.isInCombat()) return;
+      if (!config || config.towards === false) return;
+
+      if (typeof config !== 'object') config = {};
+      config = Object.assign({ towards: { players: true } }, config);
+
+      if (config.towards.players && !this._aggroTarget) {
+        this._aggroTarget = player;
+        this._aggroTimer  = Date.now();
+      }
+    },
   }
 };

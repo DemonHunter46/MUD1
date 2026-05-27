@@ -3,37 +3,23 @@
 const Combat = require('../../lib/Combat');
 
 /**
- * Example real-time combat behavior for NPCs that goes along with the player's player-combat.js
- * Have combat implemented in a behavior like this allows two NPCs with this behavior to fight without
- * the player having to be involved
+ * NPC combat behavior — updated for Aardwolf-style 3 second round system.
+ * NPCs participate in the same round system as players.
+ * First attacker gets aggro — mob always attacks the first player in its combatants set.
  */
 module.exports = () => {
-  return  {
+  return {
     listeners: {
       /**
-       * @param {*} config Behavior config
+       * Fire every 100ms — Combat.updateRound handles the 3 second lag internally
        */
       updateTick: state => function (config) {
         Combat.updateRound(state, this);
       },
 
       /**
-       * NPC was killed
-       * @param {*} config Behavior config
-       * @param {Character} killer
+       * NPC took damage — check for death
        */
-      killed: state => function (config, killer) {
-      },
-
-      /**
-       * NPC hit another character
-       * @param {*} config Behavior config
-       * @param {Damage} damage
-       * @param {Character} target
-       */
-      hit: state => function (config, damage, target) {
-      },
-
       damaged: state => function (config, damage) {
         if (this.getAttribute('health') <= 0) {
           Combat.handleDeath(state, this, damage.attacker);
@@ -41,17 +27,20 @@ module.exports = () => {
       },
 
       /**
-       * NPC killed a target
-       * @param {*} config Behavior config
-       * @param {Character} target
+       * NPC killed a target — start regeneration if no longer in combat
        */
       deathblow: state => function (config, target) {
         if (!this.isInCombat()) {
           Combat.startRegeneration(state, this);
         }
-      }
+      },
 
-      // refer to bundles/ranvier-combat/player-events.js for a further list of combat events
+      /**
+       * NPC left combat — start regeneration
+       */
+      combatEnd: state => function (config) {
+        Combat.startRegeneration(state, this);
+      },
     }
   };
 };

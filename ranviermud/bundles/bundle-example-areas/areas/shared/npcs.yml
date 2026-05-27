@@ -107,8 +107,10 @@
 
   behaviors:
     - ranvier-aggro
+    - combat
 
   equipment:
+    wield: "shared:crude-dagger"
   
   metadata:
     cr: "1/8"

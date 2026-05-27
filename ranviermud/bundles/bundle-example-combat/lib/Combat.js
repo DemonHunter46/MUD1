@@ -5,10 +5,8 @@ const { Damage, Logger } = require('ranvier');
 const Parser = require('../../bundle-example-lib/lib/ArgParser');
 const CombatErrors = require('./CombatErrors');
 
-/**
- * This class is an example implementation of a Diku-style real time combat system. Combatants
- * attack and then have some amount of lag applied to them based on their weapon speed and repeat.
- */
+const ROUND_LENGTH = 3000; // 3 seconds per round — same as Aardwolf
+
 class Combat {
   /**
    * Handle a single combat round for a given attacker
@@ -61,7 +59,8 @@ class Combat {
   }
 
   /**
-   * Find a target for a given attacker
+   * Find a target for a given attacker.
+   * Simple first-attacker aggro — mob always attacks whoever is first in combatants.
    * @param {Character} attacker
    * @return {Character|null}
    */
@@ -83,42 +82,84 @@ class Combat {
   }
 
   /**
-   * Actually apply some damage from an attacker to a target
+   * Get the next living combatant after a kill — enables hit rollover
+   * @param {Character} attacker
+   * @param {Character} deadTarget
+   * @return {Character|null}
+   */
+  static getNextCombatant(attacker, deadTarget) {
+    for (const combatant of attacker.combatants) {
+      if (
+        combatant !== deadTarget &&
+        !combatant.combatData.killed &&
+        combatant.getAttribute('health') > 0
+      ) {
+        return combatant;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Execute a full combat round — multiple hits per round with rollover.
+   * Fixed 3 second round lag matching Aardwolf's system.
    * @param {GameState} state
    * @param {Character} attacker
    * @param {Character} target
    */
   static makeAttack(state, attacker, target) {
-    let amount = this.calculateWeaponDamage(state, attacker);
-    let critical = false;
+    const weapon    = attacker.equipment.get('wield');
+    const strength  = attacker.hasAttribute('strength')  ? attacker.getAttribute('strength')  : 10;
+    const dexterity = attacker.hasAttribute('dexterity') ? attacker.getAttribute('dexterity') : 10;
 
-    if (attacker.hasAttribute('critical')) {
-      const critChance = Math.max(attacker.getMaxAttribute('critical') || 0, 0);
-      critical = Random.probability(critChance);
-      if (critical) {
-        amount = Math.ceil(amount * 1.5);
+    // Calculate hits this round
+    // Base hits from weapon or default 2, plus stat bonuses
+    const baseHits = weapon ? (weapon.metadata.hits || 2) : 2;
+    const strBonus = Math.floor(Math.max(0, strength  - 10) / 4);
+    const dexBonus = Math.floor(Math.max(0, dexterity - 10) / 4);
+    const totalHits = Math.max(1, baseHits + strBonus + dexBonus);
+
+    let currentTarget = target;
+
+    for (let i = 0; i < totalHits; i++) {
+      // If current target is dead roll over to next
+      if (!currentTarget || currentTarget.combatData.killed || currentTarget.getAttribute('health') <= 0) {
+        currentTarget = this.getNextCombatant(attacker, currentTarget);
+        if (!currentTarget) break;
       }
-    }
 
-    // Calculate AC by summing equipped armor for both players and NPCs
-    let ac = 0;
-    for (const [slot, item] of target.equipment) {
-      if (item.metadata && item.metadata.ac) {
-        ac += item.metadata.ac;
+      let amount   = this.calculateWeaponDamage(state, attacker);
+      let critical = false;
+
+      if (attacker.hasAttribute('critical')) {
+        const critChance = Math.max(attacker.getMaxAttribute('critical') || 0, 0);
+        critical = Random.probability(critChance);
+        if (critical) {
+          amount = Math.ceil(amount * 1.5);
+        }
       }
+
+      // AC reduction from all equipped armor
+      let ac = 0;
+      for (const [slot, item] of currentTarget.equipment) {
+        if (item.metadata && item.metadata.ac) {
+          ac += item.metadata.ac;
+        }
+      }
+
+      const reductionPercent = Math.min(60, ac);
+      if (reductionPercent > 0) {
+        amount = Math.round(amount * (1 - reductionPercent / 100));
+      }
+
+      amount = Math.max(1, amount);
+
+      const damage = new Damage('health', amount, attacker, weapon || attacker, { critical, type: 'physical' });
+      damage.commit(currentTarget);
     }
 
-    // AC value equals damage reduction percentage, capped at 60%
-    const reductionPercent = Math.min(60, ac);
-    if (reductionPercent > 0) {
-      amount = Math.round(amount * (1 - reductionPercent / 100));
-    }
-
-    const weapon = attacker.equipment.get('wield');
-    const damage = new Damage('health', amount, attacker, weapon || attacker, { critical, type: 'physical' });
-    damage.commit(target);
-
-    attacker.combatData.lag = this.getWeaponSpeed(state, attacker) * 1000;
+    // Fixed 3 second round lag — same as Aardwolf
+    attacker.combatData.lag = ROUND_LENGTH;
   }
 
   /**
@@ -219,15 +260,14 @@ class Combat {
 
   /**
    * Get the damage of the weapon the character is wielding.
-   * Priority order:
-   *   1. Equipped weapon metadata
-   *   2. Unarmed fallback scaled to strength
+   * Priority:
+   *   1. Equipped weapon
+   *   2. Unarmed scaled to strength
    * @param {GameState} state
    * @param {Character} attacker
    * @return {{max: number, min: number}}
    */
   static getWeaponDamage(state, attacker) {
-    // 1. Equipped weapon — works for both players and NPCs
     const weapon = attacker.equipment.get('wield');
     if (weapon) {
       return {
@@ -236,7 +276,7 @@ class Combat {
       };
     }
 
-    // 2. Unarmed fallback scaled to strength
+    // Unarmed fallback scaled to strength
     const strength = attacker.hasAttribute('strength') ? attacker.getAttribute('strength') : 1;
     return {
       min: Math.max(1, Math.floor(strength / 5)),
@@ -245,10 +285,9 @@ class Combat {
   }
 
   /**
-   * Get the speed of the currently equipped weapon adjusted by dexterity.
-   * Works for both players and NPCs.
-   * Higher dexterity reduces attack lag up to a maximum of 30%.
-   * Minimum attack speed is capped at 0.5 seconds regardless of DEX.
+   * Get weapon speed adjusted by dexterity.
+   * In the new round system speed is not used for lag — lag is always ROUND_LENGTH.
+   * Speed is still used in normalizeWeaponDamage to scale damage per hit.
    * @param {GameState} state
    * @param {Character} attacker
    * @return {number}
@@ -261,8 +300,7 @@ class Combat {
       speed = weapon.metadata.speed;
     }
 
-    // Apply dexterity modifier for everyone
-    // DEX 10 = baseline, each point above 10 = 1% faster, capped at 30%
+    // DEX modifier — each point above 10 = 1% faster, capped at 30%
     if (attacker.hasAttribute('dexterity')) {
       const dex = attacker.getAttribute('dexterity') || 10;
       const dexBonus = Math.min(0.30, (dex - 10) * 0.01);
@@ -273,7 +311,8 @@ class Combat {
   }
 
   /**
-   * Get a damage amount adjusted by attack power/weapon speed
+   * Get a damage amount adjusted by strength and weapon speed.
+   * Weapon speed still affects damage per hit — slower weapons hit harder.
    * @param {GameState} state
    * @param {Character} attacker
    * @param {number} amount
