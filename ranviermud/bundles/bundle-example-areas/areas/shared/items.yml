@@ -12,12 +12,7 @@
 
 
 #----WEAPONS (MELEE)----#
-
-
-
-
-
-#----TIER 1 (COPPER OR LESS) SIMPLE MELEE WEAPONS----#
+#----TIER 1 WEAPONS----#
 - id: wooden-club
   name: "Wooden Club"
   type: WEAPONS

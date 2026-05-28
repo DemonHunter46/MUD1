@@ -48,6 +48,7 @@
 
   behaviors:
     - ranvier-aggro
+    - combat
 
   metadata:
     cr: "1"
@@ -74,9 +75,10 @@
 
   behaviors:
     - ranvier-aggro
+    - combat
 
   equipment:
-    wield: "shared:crude-scimitar"
+    wield: "shared:crude-copper-scimitar"
     chest:  "shared:leather-armour"
   
   metadata:
@@ -84,7 +86,7 @@
     xp: 50
     image: bestiary/shared-goblin-warrior.png 
     loot:
-     - id: "shared:crude-scimitar"
+     - id: "shared:crude-copper-scimitar"
        chance: 65
 
 

@@ -1,179 +1,276 @@
 'use strict';
 
-const sprintf = require('sprintf-js').sprintf;
-const { Broadcast: B, CommandManager, ItemType } = require('ranvier');
+const { Broadcast: B } = require('ranvier');
 const Crafting = require('../lib/Crafting');
-const say = B.sayAt;
-const ItemUtil = require('../../bundle-example-lib/lib/ItemUtil');
+const {
+  getSkill,
+  tryGainSkill,
+  QUALITY_REQUIREMENTS,
+  TIER_GATHER_REQUIREMENTS,
+  MATERIAL_COSTS,
+  TIER_MATERIALS,
+  STATION_REQUIREMENTS,
+  qualityColor,
+  getMaxQuality,
+} = require('../../bundle-example-lib/lib/SkillManager');
 
-const subcommands = new CommandManager();
-
-/** LIST **/
-subcommands.add({
-  name: 'list',
-  command: state => (args, player) => {
-    const craftingCategories = getCraftingCategories(state);
-
-    // list categories
-    if (!args || !args.length) {
-      say(player, '<b>Crafting Categories</b>');
-      say(player, B.line(40));
-
-      return craftingCategories.forEach((category, index) => {
-        say(player, sprintf('%2d) %s', parseInt(index, 10) + 1, craftingCategories[index].title));
-      });
-    }
-
-    let [itemCategory, itemNumber] = args.split(' ');
-
-    itemCategory = parseInt(itemCategory, 10) - 1;
-    const category = craftingCategories[itemCategory];
-    if (!category) {
-      return say(player, "Invalid category.");
-    }
-
-    // list items within a category
-    if (!itemNumber) {
-      say(player, `<b>${category.title}</b>`);
-      say(player, B.line(40));
-
-      if (!category.items.length) {
-        return say(player, B.center(40, "No recipes."));
-      }
-
-      return category.items.forEach((categoryEntry, index) => {
-        say(player, sprintf('%2d) ', index + 1) + ItemUtil.display(categoryEntry.item));
-      });
-    }
-
-    itemNumber = parseInt(itemNumber, 10) - 1;
-    const item = category.items[itemNumber];
-    if (!item) {
-      return say(player, "Invalid item.");
-    }
-
-    say(player, ItemUtil.renderItem(state, item.item, player));
-    say(player, '<b>Recipe:</b>');
-    for (const [resource, amount] of Object.entries(item.recipe)) {
-      const ingredient = Crafting.getResourceItem(resource);
-      say(player, `  ${ItemUtil.display(ingredient)} x ${amount}`);
-    }
-  }
-});
-
-/** CREATE **/
-subcommands.add({
-  name: 'create',
-  command: state => (args, player) => {
-    if (!args || !args.length) {
-      return say(player, "Create what? 'craft create 1 1' for example.");
-    }
-
-    const isInvalidSelection = categoryList => category =>
-      isNaN(category) || category < 0 || category > categoryList.length;
-
-    const craftingCategories = getCraftingCategories(state);
-    const isInvalidCraftingCategory = isInvalidSelection(craftingCategories);
-
-    let [itemCategory, itemNumber] = args.split(' ');
-
-    itemCategory = parseInt(itemCategory, 10) - 1;
-    if (isInvalidCraftingCategory(itemCategory)) {
-      return say(player, "Invalid category.");
-    }
-
-    const category = craftingCategories[itemCategory];
-    const isInvalidCraftableItem = isInvalidSelection(category.items);
-    itemNumber = parseInt(itemNumber, 10) - 1;
-    if (isInvalidCraftableItem(itemNumber)) {
-      return say(player, "Invalid item.");
-    }
-
-    const item = category.items[itemNumber];
-    // check to see if player has resources available
-    for (const [resource, recipeRequirement] of Object.entries(item.recipe)) {
-      const playerResource = player.getMeta(`resources.${resource}`) || 0;
-      if (playerResource < recipeRequirement) {
-        return say(player, `You don't have enough resources. 'craft list ${args}' to see recipe. You need ${recipeRequirement - playerResource} more ${resource}.`);
-      }
-    }
-
-    if (player.isInventoryFull()) {
-      return say(player, "You can't hold any more items.");
-    }
-
-    // deduct resources
-    for (const [resource, amount] of Object.entries(item.recipe)) {
-      player.setMeta(`resources.${resource}`, player.getMeta(`resources.${resource}`) - amount);
-      const resItem = Crafting.getResourceItem(resource);
-      say(player, `<green>You spend ${amount} x ${ItemUtil.display(resItem)}.</green>`);
-    }
-
-    state.ItemManager.add(item.item);
-    player.addItem(item.item);
-    say(player, `<b><green>You create: ${ItemUtil.display(item.item)}.</green></b>`);
-    player.save();
-  }
-});
+const TIERS     = ['copper', 'bronze', 'iron', 'steel', 'mithril', 'adamant', 'orichalcum'];
+const QUALITIES = ['crude', 'common', 'uncommon', 'rare', 'epic', 'legendary'];
 
 module.exports = {
-  usage: 'craft <list/create> [category #] [item #]',
+  usage: 'craft <list|create|resources> [args]',
   command: state => (args, player) => {
+    args = args.trim();
+
     if (!args.length) {
-      return say(player, "Missing craft command. See 'help craft'");
+      return B.sayAt(player, 'Usage: craft list | craft list weapons <tier> | craft create <tier> <type> | craft resources');
     }
 
-    const [ command, ...subArgs ] = args.split(' ');
+    const parts   = args.split(' ');
+    const command = parts[0].toLowerCase();
+    const subArgs = parts.slice(1).join(' ');
 
-    const subcommand = subcommands.find(command);
-    if (!subcommand) {
-      return say(player, "Invalid command. Use craft list or craft create.");
+    switch (command) {
+      case 'list':      return craftList(player, subArgs);
+      case 'create':    return craftCreate(state, player, subArgs);
+      case 'resources': return craftResources(player);
+      default:
+        B.sayAt(player, 'Unknown craft command. Use: craft list | craft create | craft resources');
     }
-
-    subcommand.command(state)(subArgs.join(' '), player);
   }
 };
 
-function getCraftingCategories(state) {
-  let craftingCategories = [
-    {
-      type: ItemType.POTION,
-      title: "Potion",
-      items: []
-    },
-    {
-      type: ItemType.WEAPON,
-      title: "Weapon",
-      items: []
-    },
-    {
-      type: ItemType.ARMOR,
-      title: "Armor",
-      items: []
-    },
-  ];
+/**
+ * Check if the player's current room has the required crafting station.
+ * @param {Player} player
+ * @param {string} craftingSkill
+ * @return {boolean}
+ */
+function hasStation(player, craftingSkill) {
+  const required = STATION_REQUIREMENTS[craftingSkill];
+  if (!required) return true; // no station required
+  const stations = (player.room.metadata && player.room.metadata.stations) || [];
+  return stations.includes(required);
+}
 
-  const recipes = Crafting.getRecipes();
-  for (const recipe of recipes) {
-    const recipeItem = state.ItemFactory.create(
-      state.AreaManager.getAreaByReference(recipe.item),
-      recipe.item
-    );
+/**
+ * Get a friendly station name for display.
+ * @param {string} craftingSkill
+ * @return {string}
+ */
+function stationName(craftingSkill) {
+  const station = STATION_REQUIREMENTS[craftingSkill];
+  if (!station) return 'crafting station';
+  return station.replace(/_/g, ' ');
+}
 
-    const catIndex = craftingCategories.findIndex(cat => {
-      return cat.type === recipeItem.type;
-    });
+function craftList(player, args) {
+  const skill   = getSkill(player, 'blacksmithing');
+  const maxQual = getMaxQuality(skill);
 
-    if (catIndex === -1) {
-      continue;
+  if (!args.length) {
+    B.sayAt(player, '');
+    B.sayAt(player, '<b><cyan>====== Crafting ======</cyan></b>');
+    B.sayAt(player, ` Blacksmithing: <white>${skill}/100</white>  Max Quality: <${qualityColor(maxQual)}>${capitalize(maxQual)}</${qualityColor(maxQual)}>`);
+
+    // Show station availability in current room
+    const stations = (player.room.metadata && player.room.metadata.stations) || [];
+    if (stations.length) {
+      B.sayAt(player, ` Stations here: <green>${stations.map(s => s.replace(/_/g, ' ')).join(', ')}</green>`);
+    } else {
+      B.sayAt(player, ` <red>No crafting stations in this room.</red>`);
     }
 
-  recipeItem.hydrate(state);
-    craftingCategories[catIndex].items.push({
-      item: recipeItem,
-      recipe: recipe.recipe
-    });
+    B.sayAt(player, '<b><cyan>--------------------</cyan></b>');
+    B.sayAt(player, ' Usage: <b>craft list weapons <tier></b>');
+    B.sayAt(player, '');
+    B.sayAt(player, ' Available tiers:');
+
+    for (const tier of TIERS) {
+      const req       = TIER_GATHER_REQUIREMENTS[tier] || 0;
+      const canGather = getSkill(player, 'mining') >= req;
+      const tierColor = canGather ? 'green' : 'red';
+      B.sayAt(player, `   <${tierColor}>${capitalize(tier)}</${tierColor}> (Mining ${req}+)`);
+    }
+
+    B.sayAt(player, '<b><cyan>=====================</cyan></b>');
+    B.sayAt(player, '');
+    return;
   }
 
-  return craftingCategories;
+  // craft list weapons <tier>
+  const parts = args.split(' ');
+  if (parts[0].toLowerCase() === 'weapons') {
+    const tier = parts[1] ? parts[1].toLowerCase() : null;
+
+    if (!tier) {
+      return B.sayAt(player, 'Usage: craft list weapons <tier>  e.g. craft list weapons iron');
+    }
+
+    if (!TIERS.includes(tier)) {
+      return B.sayAt(player, `Unknown tier '${tier}'. Valid tiers: ${TIERS.join(', ')}`);
+    }
+
+    // Check station
+    if (!hasStation(player, 'blacksmithing')) {
+      B.sayAt(player, `<yellow>Note: You need a <white>${stationName('blacksmithing')}</white> to craft weapons.</yellow>`);
+    }
+
+    const recipes     = Crafting.getWeaponRecipes(skill);
+    const tierRecipes = recipes.filter(r => r.tier === tier);
+
+    B.sayAt(player, '');
+    B.sayAt(player, `<b><cyan>====== ${capitalize(tier)} Weapons ======</cyan></b>`);
+
+    for (const recipe of tierRecipes) {
+      const color = recipe.color;
+      B.sayAt(player, `  <${color}>${recipe.name}</${color}>`);
+      B.sayAt(player, `    Damage: <white>${recipe.stats.min}-${recipe.stats.max}</white>  Speed: <white>${recipe.speed}</white>  ${recipe.twoHanded ? '<yellow>[Two-Handed]</yellow>' : ''}`);
+      B.sayAt(player, `    STR Required: <white>${recipe.strRequire}</white>`);
+      B.sayAt(player, `    Materials:`);
+      for (const [mat, amount] of Object.entries(recipe.recipe)) {
+        const have     = player.getMeta(`resources.${mat}`) || 0;
+        const hasColor = have >= amount ? 'green' : 'red';
+        B.sayAt(player, `      <${hasColor}>${amount}x ${mat.replace(/_/g, ' ')} (have ${have})</${hasColor}>`);
+      }
+      B.sayAt(player, `    craft create ${tier} ${recipe.weaponType}`);
+      B.sayAt(player, '');
+    }
+  }
+}
+
+function craftCreate(state, player, args) {
+  if (!args.length) {
+    return B.sayAt(player, 'Usage: craft create <tier> <weapon type>  e.g. craft create iron sword');
+  }
+
+  const parts      = args.split(' ');
+  const tier       = parts[0] ? parts[0].toLowerCase() : null;
+  const weaponType = parts[1] ? parts[1].toLowerCase() : null;
+
+  if (!tier || !weaponType) {
+    return B.sayAt(player, 'Usage: craft create <tier> <weapon type>  e.g. craft create iron sword');
+  }
+
+  if (!TIERS.includes(tier)) {
+    return B.sayAt(player, `Unknown tier '${tier}'. Valid tiers: ${TIERS.join(', ')}`);
+  }
+
+  const validTypes = ['dagger', 'sword', 'greatsword', 'axe', 'greataxe', 'mace'];
+  if (!validTypes.includes(weaponType)) {
+    return B.sayAt(player, `Unknown weapon type '${weaponType}'. Valid types: ${validTypes.join(', ')}`);
+  }
+
+  // Check station — must be at a forge to craft weapons
+  if (!hasStation(player, 'blacksmithing')) {
+    return B.sayAt(player, `You need a <b>${stationName('blacksmithing')}</b> to craft weapons. Find a forge.`);
+  }
+
+  // Check blacksmithing skill
+  const skill   = getSkill(player, 'blacksmithing');
+  const quality = getMaxQuality(skill);
+
+  // Check mining skill for this tier
+  const miningRequired = TIER_GATHER_REQUIREMENTS[tier] || 0;
+  if (getSkill(player, 'mining') < miningRequired) {
+    return B.sayAt(player, `You need <b>${miningRequired}</b> Mining skill to work with ${capitalize(tier)}. You have <b>${getSkill(player, 'mining')}</b>.`);
+  }
+
+  // Check materials
+  const matCosts = MATERIAL_COSTS[quality];
+  const tierMats = TIER_MATERIALS[tier];
+  const recipe   = {
+    [tierMats.primary]:   matCosts[0],
+    [tierMats.secondary]: matCosts[1],
+  };
+
+  for (const [material, amount] of Object.entries(recipe)) {
+    const have = player.getMeta(`resources.${material}`) || 0;
+    if (have < amount) {
+      return B.sayAt(player, `Not enough materials. Need <b>${amount}x ${material.replace(/_/g, ' ')}</b>, you have <b>${have}</b>.`);
+    }
+  }
+
+  // Check inventory space
+  if (player.isInventoryFull()) {
+    return B.sayAt(player, "You can't hold any more items.");
+  }
+
+  // Deduct materials
+  for (const [material, amount] of Object.entries(recipe)) {
+    const current = player.getMeta(`resources.${material}`) || 0;
+    player.setMeta(`resources.${material}`, current - amount);
+    B.sayAt(player, `<green>You use <white>${amount}x ${material.replace(/_/g, ' ')}</white>.</green>`);
+  }
+
+  // Build the weapon
+  const metadata = Crafting.buildWeaponMetadata(weaponType, tier, quality);
+  const color    = qualityColor(quality);
+  const itemName = `${capitalize(quality)} ${capitalize(tier)} ${capitalize(weaponType)}`;
+
+  // Create item directly without needing a YAML definition
+  const { Item } = require('ranvier');
+  const craftedItem = new Item(null, {
+    id:          `crafted_${tier}_${weaponType}_${quality}`,
+    name:        itemName,
+    type:        'WEAPON',
+    roomDesc:    `A ${itemName.toLowerCase()} lies here.`,
+    keywords:    [tier, weaponType, quality, 'weapon', 'crafted'],
+    description: `A ${quality} quality ${tier} ${weaponType}, crafted with skill.`,
+    metadata,
+  });
+
+  state.ItemManager.add(craftedItem);
+  player.addItem(craftedItem);
+
+  B.sayAt(player, `<b><${color}>You craft: ${itemName}!</${color}></b>`);
+  B.sayAt(player, `  Damage: <white>${metadata.minDamage}-${metadata.maxDamage}</white>  Speed: <white>${metadata.speed}</white>  STR: <white>${metadata.requires.strength}</white>`);
+  B.sayAt(player, `<yellow>The forge hisses as you quench the blade.</yellow>`);
+
+  // Try to gain blacksmithing skill
+  const gained = tryGainSkill(player, 'blacksmithing');
+  if (gained) {
+    const newLevel = (player.getMeta('skills') || {}).blacksmithing || 0;
+    B.sayAt(player, `<yellow>Your Blacksmithing skill increased to <white>${newLevel}</white>!</yellow>`);
+
+    // Announce quality unlock milestones
+    for (const [q, req] of Object.entries(QUALITY_REQUIREMENTS)) {
+      if (newLevel === req && req > 0) {
+        B.sayAt(player, `<b><yellow>You can now craft <${qualityColor(q)}>${capitalize(q)}</${qualityColor(q)}> quality items!</yellow></b>`);
+      }
+    }
+  }
+
+  player.save();
+}
+
+function craftResources(player) {
+  B.sayAt(player, '');
+  B.sayAt(player, '<b><cyan>====== Your Resources ======</cyan></b>');
+
+  const allResources = require('../data/resources.json');
+  let hasAny = false;
+
+  for (const [key, def] of Object.entries(allResources)) {
+    const amount = player.getMeta(`resources.${key}`) || 0;
+    if (amount > 0) {
+      hasAny = true;
+      const color = def.quality === 'epic'     ? 'magenta' :
+                    def.quality === 'rare'      ? 'blue'    :
+                    def.quality === 'uncommon'  ? 'cyan'    : 'white';
+      B.sayAt(player, `  <${color}>${def.title}</${color}>: <white>${amount}</white>`);
+    }
+  }
+
+  if (!hasAny) {
+    B.sayAt(player, '  You have no crafting resources.');
+    B.sayAt(player, '  Use <b>mine</b>, <b>chop</b>, <b>forage</b> or <b>fish</b> to gather materials.');
+  }
+
+  B.sayAt(player, '<b><cyan>===========================</cyan></b>');
+  B.sayAt(player, '');
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }

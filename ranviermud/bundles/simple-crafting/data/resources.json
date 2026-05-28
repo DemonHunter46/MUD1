@@ -1,10 +1,26 @@
 {
-  "plant_material": {
-    "title": "Plant Material",
-    "quality": "common"
-  },
-  "rose_petal": {
-    "title": "Rose Petal",
-    "quality": "uncommon"
-  }
+  "copper_ore":     { "title": "Copper Ore",     "quality": "common"   },
+  "tin_ore":        { "title": "Tin Ore",         "quality": "common"   },
+  "iron_ore":       { "title": "Iron Ore",        "quality": "common"   },
+  "coal":           { "title": "Coal",            "quality": "common"   },
+  "carbon_shard":   { "title": "Carbon Shard",    "quality": "uncommon" },
+  "mithril_ore":    { "title": "Mithril Ore",     "quality": "rare"     },
+  "moonstone":      { "title": "Moonstone",       "quality": "rare"     },
+  "adamant_ore":    { "title": "Adamant Ore",     "quality": "rare"     },
+  "dragon_scale":   { "title": "Dragon Scale",    "quality": "rare"     },
+  "orichalcum_ore": { "title": "Orichalcum Ore",  "quality": "epic"     },
+  "void_crystal":   { "title": "Void Crystal",    "quality": "epic"     },
+  "leather_strips": { "title": "Leather Strips",  "quality": "common"   },
+  "pine_wood":      { "title": "Pine Wood",       "quality": "common"   },
+  "oak_wood":       { "title": "Oak Wood",        "quality": "common"   },
+  "ash_wood":       { "title": "Ash Wood",        "quality": "uncommon" },
+  "ironwood":       { "title": "Ironwood",        "quality": "rare"     },
+  "darkwood":       { "title": "Darkwood",        "quality": "rare"     },
+  "plant_material": { "title": "Plant Material",  "quality": "common"   },
+  "rose_petal":     { "title": "Rose Petal",      "quality": "uncommon" },
+  "herb_bundle":    { "title": "Herb Bundle",     "quality": "common"   },
+  "mushroom":       { "title": "Mushroom",        "quality": "common"   },
+  "common_fish":    { "title": "Common Fish",     "quality": "common"   },
+  "silver_fish":    { "title": "Silver Fish",     "quality": "uncommon" },
+  "golden_fish":    { "title": "Golden Fish",     "quality": "rare"     }
 }

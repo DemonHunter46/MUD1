@@ -1,3 +1,77 @@
+
+
+#----ROOM WITH STATIONS TEMPLATE----#
+- id: blacksmith
+  title: "The Blacksmith's Forge"
+  description: "A roaring forge dominates the room, radiating intense heat. The smell of hot metal fills the air. This is a place of creation."
+  coordinates: [3, 5, 0]
+  metadata:
+    stations:
+      - forge
+  exits:
+    south:
+      roomId: "area:town-square"
+
+- id: tannery
+  title: "The Tannery"
+  description: "Hides and pelts hang from the rafters. A large tanning rack sits in the centre of the room."
+  coordinates: [4, 5, 0]
+  metadata:
+    stations:
+      - tanning_rack
+  exits:
+    west:
+      roomId: "area:town-square"
+
+- id: alchemist-lab
+  title: "The Alchemist's Laboratory"
+  description: "Bubbling vials and strange smells fill this cluttered room. An alchemy table dominates the centre."
+  coordinates: [5, 5, 0]
+  metadata:
+    stations:
+      - alchemy_table
+  exits:
+    north:
+      roomId: "area:town-square"
+
+- id: kitchen
+  title: "The Kitchen"
+  description: "A warm kitchen with a large cooking fire and stone oven. The smell of food fills the air."
+  coordinates: [3, 4, 0]
+  metadata:
+    stations:
+      - cooking_fire
+  exits:
+    east:
+      roomId: "area:town-square"
+
+- id: carpentry-shop
+  title: "The Carpenter's Workshop"
+  description: "Sawdust covers the floor. A large workbench with tools sits against the wall."
+  coordinates: [4, 4, 0]
+  metadata:
+    stations:
+      - workbench
+  exits:
+    north:
+      roomId: "area:town-square"
+
+# A master crafting hall with multiple stations
+- id: crafting-hall
+  title: "The Crafting Hall"
+  description: "A grand hall equipped with every crafting station imaginable. Master craftsmen work here day and night."
+  coordinates: [5, 4, 0]
+  metadata:
+    stations:
+      - forge
+      - tanning_rack
+      - alchemy_table
+      - cooking_fire
+      - workbench
+  exits:
+    west:
+      roomId: "area:town-square"
+
 #----TOP TEMPLATE FOR MONSTERS----#
 - id: monster-id
   name: "Monster Name"
