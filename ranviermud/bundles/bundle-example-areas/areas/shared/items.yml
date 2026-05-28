@@ -10,6 +10,135 @@
     value: 1
     currency: copper
 
+#----CRAFTED ITEM TEMPLATES----#
+# bundles/bundle-example-areas/areas/shared/items.yml
+
+- id: crafted-dagger
+  name: "Crafted Dagger"
+  type: WEAPON
+  roomDesc: "A crafted dagger lies here."
+  keywords: [dagger, weapon, crafted]
+  description: "A crafted dagger."
+  metadata:
+    slot: wield
+    minDamage: 1
+    maxDamage: 2
+    speed: 1.0
+    ac: 0
+    twoHanded: false
+    quality: crude
+    tier: copper
+    requires:
+      strength: 8
+    sellable:
+      value: 1
+      currency: gold
+
+- id: crafted-sword
+  name: "Crafted Sword"
+  type: WEAPON
+  roomDesc: "A crafted sword lies here."
+  keywords: [sword, weapon, crafted]
+  description: "A crafted sword."
+  metadata:
+    slot: wield
+    minDamage: 1
+    maxDamage: 2
+    speed: 2.0
+    ac: 0
+    twoHanded: false
+    quality: crude
+    tier: copper
+    requires:
+      strength: 10
+    sellable:
+      value: 1
+      currency: gold
+
+- id: crafted-greatsword
+  name: "Crafted Greatsword"
+  type: WEAPON
+  roomDesc: "A crafted greatsword lies here."
+  keywords: [greatsword, weapon, crafted, two-handed]
+  description: "A crafted greatsword."
+  metadata:
+    slot: wield
+    minDamage: 1
+    maxDamage: 2
+    speed: 3.0
+    ac: 0
+    twoHanded: true
+    quality: crude
+    tier: copper
+    requires:
+      strength: 14
+    sellable:
+      value: 1
+      currency: gold
+
+- id: crafted-axe
+  name: "Crafted Axe"
+  type: WEAPON
+  roomDesc: "A crafted axe lies here."
+  keywords: [axe, weapon, crafted]
+  description: "A crafted axe."
+  metadata:
+    slot: wield
+    minDamage: 1
+    maxDamage: 2
+    speed: 2.0
+    ac: 0
+    twoHanded: false
+    quality: crude
+    tier: copper
+    requires:
+      strength: 10
+    sellable:
+      value: 1
+      currency: gold
+
+- id: crafted-greataxe
+  name: "Crafted Greataxe"
+  type: WEAPON
+  roomDesc: "A crafted greataxe lies here."
+  keywords: [greataxe, weapon, crafted, two-handed]
+  description: "A crafted greataxe."
+  metadata:
+    slot: wield
+    minDamage: 1
+    maxDamage: 2
+    speed: 3.5
+    ac: 0
+    twoHanded: true
+    quality: crude
+    tier: copper
+    requires:
+      strength: 16
+    sellable:
+      value: 1
+      currency: gold
+
+- id: crafted-mace
+  name: "Crafted Mace"
+  type: WEAPON
+  roomDesc: "A crafted mace lies here."
+  keywords: [mace, weapon, crafted]
+  description: "A crafted mace."
+  metadata:
+    slot: wield
+    minDamage: 1
+    maxDamage: 2
+    speed: 2.5
+    ac: 0
+    twoHanded: false
+    quality: crude
+    tier: copper
+    requires:
+      strength: 12
+    sellable:
+      value: 1
+      currency: gold
+
 
 #----WEAPONS (MELEE)----#
 #----TIER 1 WEAPONS----#
@@ -27,6 +156,11 @@
     ac: 0
     requires:
       strength: 4
+
+
+
+- id: crude-copper-dagger
+  name: "Crude Copper Dagger"
 
 
 - id: crude-copper-scimitar
